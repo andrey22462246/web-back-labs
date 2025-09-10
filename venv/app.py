@@ -11,14 +11,16 @@ def start():
                <h1>web-сервер на flask</h1>
                 <a href="/author">author</a>
            </body>
-        </html>"""
+        </html>""", 200, {
+            'X-Server':'sample',
+            'Content-Type': 'text/plain; charset=utf-8'
+            }
 
 @app.route("/author")
 def author():
     name = "Шкуропатов Андрей Александрович"
     group = "ФБИ-32"
     faculty = "ФБ"
-
     return """<!doctype html>
         <html>
             <body>
