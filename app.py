@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, redirect
 import datetime
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -50,7 +51,9 @@ def image():
     </body>
 </html>
 '''
+
 count = 0
+
 @app.route("/counter")
 def counter():
     global count
@@ -62,14 +65,25 @@ def counter():
 <!doctype html>
 <html>
     <body>
+        <h1>Счетчик посещений</h1>
         Сколько раз вы сюда заходили: ''' + str(count) + '''
         <hr>
         Дата и время: ''' + str(time) + '''<br>
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP-адрес: ''' + client_ip + '''<br>
+        <hr>
+        <a href="/reset_counter">Очистить счетчик</a> | 
+        <a href="/web">На главную</a>
     </body>
 </html>
 '''
+
+@app.route("/reset_counter")
+def reset_counter():
+    global count
+    count = 0
+    return redirect("/counter")
+
 @app.route("/info")
 def info():
     return redirect("/author")
@@ -90,3 +104,5 @@ def created():
 def not_found(err):
     return "нет такой страницы", 404
 
+if __name__ == '__main__':
+    app.run(debug=True)
