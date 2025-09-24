@@ -496,6 +496,22 @@ def not_found(err):
 </html>
 ''', 404
 
+@app.route("/400")
+def badrequest():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>400 Bad Request </title>
+</head>
+<body>
+    <h1>400 Bad Request</h1>
+    <p>Неправильный, некорректный запрос.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 400
+
 @app.route("/401")
 def unauthorized():
     return '''
