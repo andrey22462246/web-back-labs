@@ -3,6 +3,8 @@ import datetime
 
 app = Flask(__name__)
 
+error_404_log = []
+
 @app.route("/")
 @app.route("/index")
 def main_page():
@@ -75,9 +77,8 @@ def main_page():
 </body>
 </html>
 '''
-
 @app.route("/lab1")
-@app.route("/lab1/")  
+@app.route("/lab1/")
 def lab1_index():
     return '''
 <!doctype html>
@@ -114,6 +115,34 @@ def lab1_index():
         .menu a:hover {
             background-color: #34495e;
         }
+        .routes {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .routes h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .route-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .route-list li {
+            margin: 8px 0;
+            padding: 5px;
+        }
+        .route-list a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .route-list a:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+        }
         .back-link {
             margin-top: 20px;
         }
@@ -136,9 +165,31 @@ def lab1_index():
         <a href="/lab1/image">Изображение</a>
         <a href="/lab1/counter">Счетчик</a>
         <a href="/lab1/info">Информация</a>
-        <a href="/http-codes">HTTP Коды ответов</a>
-        <a href="/test-errors">Тест ошибок 500</a>
-        <a href="/несуществующая-страница">Тест 404 ошибки</a>
+    </div>
+
+    <div class="routes">
+        <h2>Список роутов</h2>
+        <ul class="route-list">
+            <li>📋 <a href="/">Главная страница</a> (/, /index)</li>
+            <li>🔧 <a href="/lab1">Меню лабораторной 1</a> (/lab1)</li>
+            <li>🌐 <a href="/lab1/web">Web-сервер</a> (/lab1/web)</li>
+            <li>👤 <a href="/lab1/author">Информация об авторе</a> (/lab1/author)</li>
+            <li>🖼️ <a href="/lab1/image">Изображение дуба</a> (/lab1/image)</li>
+            <li>🔢 <a href="/lab1/counter">Счетчик посещений</a> (/lab1/counter)</li>
+            <li>🔄 <a href="/lab1/reset_counter">Сброс счетчика</a> (/lab1/reset_counter)</li>
+            <li>ℹ️ <a href="/lab1/info">Информация (редирект)</a> (/lab1/info)</li>
+            <li>🚫 <a href="/lab1/несуществующая">Тест 404 ошибки</a></li>
+            <li>⚡ <a href="/test-errors">Тест ошибок 500</a> (/test-errors)</li>
+            <li>🐞 <a href="/cause-error">Вызов ошибки сервера</a> (/cause-error)</li>
+            <li>📊 <a href="/http-codes">HTTP коды ответов</a> (/http-codes)</li>
+            <li>❌ <a href="/400">400 Bad Request</a> (/400)</li>
+            <li>🔐 <a href="/401">401 Unauthorized</a> (/401)</li>
+            <li>💳 <a href="/402">402 Payment Required</a> (/402)</li>
+            <li>🚷 <a href="/403">403 Forbidden</a> (/403)</li>
+            <li>📡 <a href="/405">405 Method Not Allowed</a> (/405)</li>
+            <li>🍵 <a href="/418">418 I'm a teapot</a> (/418)</li>
+            <li>✅ <a href="/created">201 Created</a> (/created)</li>
+        </ul>
     </div>
     
     <div class="back-link">
@@ -263,60 +314,125 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return '''
+    
+    client_ip = request.remote_addr
+    access_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    requested_url = request.url
+    user_agent = request.headers.get('User-Agent', 'Неизвестно')
+    
+    
+    log_entry = {
+        'ip': client_ip,
+        'date': access_date,
+        'url': requested_url,
+        'user_agent': user_agent
+    }
+    error_404_log.append(log_entry)
+    
+    
+    if len(error_404_log) > 20:
+        error_404_log.pop(0)
+    
+    
+    log_html = ""
+    for entry in reversed(error_404_log):  
+        log_html += f'''
+        <div class="log-entry">
+            <div class="log-ip">📍 {entry['ip']}</div>
+            <div class="log-date">📅 {entry['date']}</div>
+            <div class="log-url">🌐 {entry['url']}</div>
+            <div class="log-agent">🖥️ {entry['user_agent'][:50]}...</div>
+        </div>
+        '''
+    
+    return f'''
 <!doctype html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>404 - Страница не найдена</title>
     <style>
-        body {
+        body {{
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             color: white;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            padding: 40px;
+        }}
+        .container {{
+            max-width: 1000px;
+            margin: 0 auto;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        .error-code {
+            overflow: hidden;
+        }}
+        .error-section {{
+            padding: 40px;
+            text-align: center;
+        }}
+        .log-section {{
+            background: rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }}
+        .error-code {{
             font-size: 120px;
             font-weight: bold;
             margin: 0;
             text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
             color: #ff6b6b;
-        }
-        .error-title {
+        }}
+        .error-title {{
             font-size: 36px;
             margin: 20px 0;
             color: #ffe66d;
-        }
-        .error-message {
-            font-size: 18px;
-            line-height: 1.6;
+        }}
+        .error-info {{
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
-            opacity: 0.9;
-        }
-        .tea-cup {
-            font-size: 80px;
-            margin: 20px 0;
-            animation: bounce 2s infinite;
-        }
-        .navigation {
-            margin-top: 30px;
-        }
-        .btn {
+            text-align: left;
+            display: inline-block;
+        }}
+        .info-item {{
+            margin: 5px 0;
+            font-size: 16px;
+        }}
+        .log-title {{
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffe66d;
+            text-align: center;
+        }}
+        .log-entry {{
+            background: rgba(255, 255, 255, 0.05);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+        }}
+        .log-ip {{
+            font-weight: bold;
+            color: #4ecdc4;
+        }}
+        .log-date {{
+            color: #ffe66d;
+            font-size: 14px;
+        }}
+        .log-url {{
+            color: #ff6b6b;
+            word-break: break-all;
+        }}
+        .log-agent {{
+            color: #aaa;
+            font-size: 12px;
+            font-style: italic;
+        }}
+        .btn {{
             display: inline-block;
             padding: 12px 30px;
             margin: 10px;
@@ -327,52 +443,53 @@ def not_found(err):
             font-weight: bold;
             transition: all 0.3s ease;
             border: 2px solid transparent;
-        }
-        .btn:hover {
+        }}
+        .btn:hover {{
             background: transparent;
             border-color: #4ecdc4;
             transform: translateY(-2px);
-        }
-        .search-box {
+        }}
+        .tea-cup {{
+            font-size: 80px;
             margin: 20px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .suggestions {
-            margin-top: 20px;
-            font-size: 14px;
+            animation: bounce 2s infinite;
+        }}
+        @keyframes bounce {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-10px); }}
+        }}
+        .log-count {{
+            text-align: center;
+            margin-bottom: 15px;
             opacity: 0.8;
-        }
+        }}
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="tea-cup">☕</div>
-        <h1 class="error-code">404</h1>
-        <h2 class="error-title">Ой! Кажется, мы потерялись в цифровом пространстве</h2>
+        <div class="error-section">
+            <div class="tea-cup">☕</div>
+            <h1 class="error-code">404</h1>
+            <h2 class="error-title">Ой! Страница куда-то пропала</h2>
+            
+            <div class="error-info">
+                <div class="info-item">🌐 <strong>Запрошенный URL:</strong> {requested_url}</div>
+                <div class="info-item">📍 <strong>Ваш IP-адрес:</strong> {client_ip}</div>
+                <div class="info-item">📅 <strong>Дата и время:</strong> {access_date}</div>
+                <div class="info-item">🖥️ <strong>Браузер:</strong> {user_agent[:80]}...</div>
+            </div>
+
+            <div class="navigation">
+                <a href="/" class="btn">🏠 На главную</a>
+                <a href="/lab1" class="btn">📚 К лабораторным</a>
+                <a href="javascript:history.back()" class="btn">↩️ Назад</a>
+            </div>
+        </div>
         
-        <div class="error-message">
-            <p>Страница, которую вы ищете, упорхнула в параллельную вселенную или просто решила взять выходной.</p>
-            <p>Возможно, она прячется за одним из этих вариантов:</p>
-        </div>
-
-        <div class="search-box">
-            <p>🔍 <em>Пока вы здесь, почему бы не выпить чашечку чая?</em></p>
-        </div>
-
-        <div class="navigation">
-            <a href="/" class="btn">🏠 На главную</a>
-            <a href="/lab1" class="btn">📚 К лабораторным</a>
-            <a href="javascript:history.back()" class="btn">↩️ Назад</a>
-        </div>
-
-        <div class="suggestions">
-            <p>P.S. Если вы уверены, что страница должна быть здесь, возможно, она просто замаскировалась под ошибку 418</p>
+        <div class="log-section">
+            <h3 class="log-title">📊 Журнал 404 ошибок</h3>
+            <div class="log-count">Всего записей: {len(error_404_log)}</div>
+            {log_html}
         </div>
     </div>
 </body>
