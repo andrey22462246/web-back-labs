@@ -3,21 +3,21 @@ import datetime
 
 app = Flask(__name__)
 
-@app.route("/")
-@app.route("/web")
+@app.route("/lab1/web")
+@app.route("/lab1/")  # добавим корневой путь для lab1
 def start():
     return """<!doctype html>
         <html>
            <body>
                <h1>web-сервер на flask</h1>
-                <a href="/author">author</a>
+                <a href="/lab1/author">author</a>
            </body>
         </html>""", 200, {
             'X-Server':'sample',
             'Content-Type': 'text/plain; charset=utf-8'
             }
 
-@app.route("/author")
+@app.route("/lab1/author")
 def author():
     name = "Шкуропатов Андрей Александрович"
     group = "ФБИ-32"
@@ -28,11 +28,11 @@ def author():
                 <p>Студент: """ + name + """</p>
                 <p>Группа: """ + group + """</p>
                 <p>Факультет: """ + faculty + """</p>
-                <a href="/web">web</a>
+                <a href="/lab1/web">web</a>
             </body>
         </html>"""
 
-@app.route("/image")
+@app.route("/lab1/image")
 def image():
     path = url_for("static", filename="oak.jpg")
     css_path = url_for("static", filename="lab1.css")
@@ -47,14 +47,14 @@ def image():
         <h1>Величественный дуб</h1>
         <img src="''' + path + '''" alt="Дуб">
         <br>
-        <a href="/web">Вернуться на главную</a>
+        <a href="/lab1/web">Вернуться на главную</a>
     </body>
 </html>
 '''
 
 count = 0
 
-@app.route("/counter")
+@app.route("/lab1/counter")
 def counter():
     global count
     count += 1
@@ -72,21 +72,21 @@ def counter():
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP-адрес: ''' + client_ip + '''<br>
         <hr>
-        <a href="/reset_counter">Очистить счетчик</a> | 
-        <a href="/web">На главную</a>
+        <a href="/lab1/reset_counter">Очистить счетчик</a> | 
+        <a href="/lab1/web">На главную</a>
     </body>
 </html>
 '''
 
-@app.route("/reset_counter")
+@app.route("/lab1/reset_counter")
 def reset_counter():
     global count
     count = 0
-    return redirect("/counter")
+    return redirect("/lab1/counter")
 
-@app.route("/info")
+@app.route("/lab1/info")
 def info():
-    return redirect("/author")
+    return redirect("/lab1/author")  # исправлен адрес перенаправления
 
 @app.route("/created")
 def created():
