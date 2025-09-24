@@ -136,6 +136,9 @@ def lab1_index():
         <a href="/lab1/image">Изображение</a>
         <a href="/lab1/counter">Счетчик</a>
         <a href="/lab1/info">Информация</a>
+        <a href="/http-codes">HTTP Коды ответов</a>
+        <a href="/test-errors">Тест ошибок 500</a>
+        <a href="/несуществующая-страница">Тест 404 ошибки</a>
     </div>
     
     <div class="back-link">
@@ -498,5 +501,204 @@ def http_codes_menu():
 </body>
 </html>
 '''
+@app.route("/cause-error")
+def cause_error():
+    """Специальный роут для вызова ошибки сервера"""
+    
+    error_type = request.args.get('type', 'division')
+    
+    if error_type == 'division':
+        
+        result = 10 / 0
+    elif error_type == 'concat':
+        
+        result = 10 + "строка"
+    elif error_type == 'index':
+        
+        arr = [1, 2, 3]
+        result = arr[10]
+    elif error_type == 'attribute':
+        
+        result = None.some_method()
+    elif error_type == 'import':
+        
+        import non_existent_module
+    else:
+        
+        raise Exception("Произвольная ошибка сервера!")
+    
+    return "Эта строка никогда не будет показана"
+
+@app.errorhandler(500)
+def internal_server_error(err):
+    """Обработчик ошибки 500"""
+    return '''
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>500 - Ошибка сервера</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 700px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            color: #ffe66d;
+        }
+        .error-title {
+            font-size: 36px;
+            margin: 20px 0;
+            color: #ffe66d;
+        }
+        .error-message {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0;
+            opacity: 0.9;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .warning-icon {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+        .navigation {
+            margin-top: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            background: #4ecdc4;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .btn:hover {
+            background: transparent;
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+        }
+        .error-types {
+            margin: 20px 0;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .error-types h3 {
+            margin-top: 0;
+            color: #ffe66d;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .tech-info {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning-icon">⚠️</div>
+        <h1 class="error-code">500</h1>
+        <h2 class="error-title">Внутренняя ошибка сервера</h2>
+        
+        <div class="error-message">
+            <p>На сервере произошла непредвиденная ошибка. Наши инженеры уже бегут с кофе и паяльниками устранять проблему!</p>
+            <p>Попробуйте обновить страницу через несколько минут или вернуться на главную.</p>
+        </div>
+
+        <div class="error-types">
+            <h3>Возможные причины:</h3>
+            <ul>
+                <li>Ошибка в программном коде</li>
+                <li>Проблемы с подключением к базе данных</li>
+                <li>Недостаточно памяти на сервере</li>
+                <li>Временные технические неполадки</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="/" class="btn">🏠 На главную</a>
+            <a href="javascript:location.reload()" class="btn">🔄 Обновить</a>
+            <a href="/lab1" class="btn">📚 К лабораторным</a>
+        </div>
+
+        <div class="tech-info">
+            <p>Если ошибка повторяется, пожалуйста, сообщите администратору сайта.</p>
+        </div>
+    </div>
+</body>
+</html>
+''', 500
+
+
+@app.route("/test-errors")
+def test_errors():
+    """Страница для тестирования различных ошибок"""
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>Тестирование ошибок</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .error-test { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .warning { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Тестирование ошибок сервера</h1>
+    
+    <div class="warning">
+        ⚠️ Для тестирования ошибки 500 запустите сервер без флага --debug!
+    </div>
+    
+    <div class="error-test">
+        <h3>Вызвать ошибку 500:</h3>
+        <a href="/cause-error?type=division">Деление на ноль</a><br>
+        <a href="/cause-error?type=concat">Конкатенация числа и строки</a><br>
+        <a href="/cause-error?type=index">Ошибка индекса</a><br>
+        <a href="/cause-error?type=attribute">Ошибка атрибута</a><br>
+        <a href="/cause-error?type=import">Ошибка импорта</a><br>
+        <a href="/cause-error?type=general">Общая ошибка</a>
+    </div>
+    
+    <br>
+    <a href="/">На главную</a>
+</body>
+</html>
+'''
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
