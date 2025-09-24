@@ -184,6 +184,15 @@ def author():
 def image():
     path = url_for("static", filename="oak.jpg")
     css_path = url_for("static", filename="lab1.css")
+    
+    headers = {
+        'Content-Language': 'ru',  
+        'X-Developer': 'Shkuropatov-Andrey',  
+        'X-University': 'NSTU-FB',  
+        'X-Image-Description': 'Mighty oak tree in the forest',  
+        'X-Lab-Number': '1'  
+    }
+    
     return '''
 <!doctype html>
 <html>
@@ -200,7 +209,7 @@ def image():
         <a href="/">На главную</a>
     </body>
 </html>
-'''
+''', 200, headers  
 
 count = 0
 
