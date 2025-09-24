@@ -252,6 +252,152 @@ def created():
 @app.errorhandler(404)
 def not_found(err):
     return "нет такой страницы", 404
+@app.route("/400")
+def bad_request():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>400 Bad Request</title>
+</head>
+<body>
+    <h1>400 Bad Request</h1>
+    <p>Сервер не может обработать запрос из-за клиентской ошибки (неправильный синтаксис, неверный запрос и т.д.)</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 400
 
+@app.route("/401")
+def unauthorized():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>401 Unauthorized</title>
+</head>
+<body>
+    <h1>401 Unauthorized</h1>
+    <p>Для доступа к запрашиваемому ресурсу требуется аутентификация.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 401
+
+@app.route("/402")
+def payment_required():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>402 Payment Required</title>
+</head>
+<body>
+    <h1>402 Payment Required</h1>
+    <p>Зарезервировано для будущего использования. Изначально предназначалось для использования в системах цифровых платежей.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 402
+
+@app.route("/403")
+def forbidden():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>403 Forbidden</title>
+</head>
+<body>
+    <h1>403 Forbidden</h1>
+    <p>Доступ к запрашиваемому ресурсу запрещен.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 403
+
+@app.route("/405")
+def method_not_allowed():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>405 Method Not Allowed</title>
+</head>
+<body>
+    <h1>405 Method Not Allowed</h1>
+    <p>Указанный метод HTTP не поддерживается для данного ресурса.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 405
+
+@app.route("/418")
+def teapot():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>418 I'm a teapot</title>
+</head>
+<body>
+    <h1>418 I'm a teapot</h1>
+    <p>Я - чайник! Этот код был введен как первоапрельская шутка в 1998 году.</p>
+    <a href="/">На главную</a>
+</body>
+</html>
+''', 418
+
+
+@app.route("/http-codes")
+def http_codes_menu():
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>HTTP Коды ответов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .code { margin: 10px 0; padding: 10px; border-left: 4px solid #ccc; }
+        .400 { border-color: #e74c3c; }
+        .401 { border-color: #e67e22; }
+        .402 { border-color: #f1c40f; }
+        .403 { border-color: #d35400; }
+        .405 { border-color: #c0392b; }
+        .418 { border-color: #8e44ad; }
+    </style>
+</head>
+<body>
+    <h1>HTTP Коды ответов</h1>
+    
+    <div class="code 400">
+        <a href="/400">400 Bad Request</a> - Ошибка запроса
+    </div>
+    
+    <div class="code 401">
+        <a href="/401">401 Unauthorized</a> - Неавторизован
+    </div>
+    
+    <div class="code 402">
+        <a href="/402">402 Payment Required</a> - Необходима оплата
+    </div>
+    
+    <div class="code 403">
+        <a href="/403">403 Forbidden</a> - Запрещено
+    </div>
+    
+    <div class="code 405">
+        <a href="/405">405 Method Not Allowed</a> - Метод не разрешен
+    </div>
+    
+    <div class="code 418">
+        <a href="/418">418 I'm a teapot</a> - Я чайник
+    </div>
+    
+    <br>
+    <a href="/">На главную</a>
+</body>
+</html>
+'''
 if __name__ == '__main__':
     app.run(debug=True)
