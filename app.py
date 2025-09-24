@@ -3,8 +3,81 @@ import datetime
 
 app = Flask(__name__)
 
+@app.route("/")
+@app.route("/index")
+def main_page():
+    current_year = datetime.datetime.now().year
+    return f'''
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>НГТУ, ФБ, Лабораторные работы</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }}
+        header {{
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }}
+        nav {{
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }}
+        nav ul {{
+            list-style-type: none;
+            padding: 0;
+        }}
+        nav li {{
+            margin: 10px 0;
+        }}
+        nav a {{
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+        }}
+        nav a:hover {{
+            color: #e74c3c;
+        }}
+        footer {{
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="/lab1">Первая лабораторная</a></li>
+            <!-- Здесь будут ссылки на другие лабораторные -->
+        </ul>
+    </nav>
+    
+    <footer>
+        <p>Шкуропатов Андрей Александрович, ФБИ-32, 3 курс, 2025 год</p>
+    </footer>
+</body>
+</html>
+'''
 @app.route("/lab1/web")
-@app.route("/lab1/")  # добавим корневой путь для lab1
+@app.route("/lab1/")  
 def start():
     return """<!doctype html>
         <html>
@@ -86,9 +159,9 @@ def reset_counter():
 
 @app.route("/lab1/info")
 def info():
-    return redirect("/lab1/author")  # исправлен адрес перенаправления
+    return redirect("/lab1/author")  
 
-@app.route("/created")
+@app.route("/lab1/created")
 def created():
     return '''
 <!doctype html>
