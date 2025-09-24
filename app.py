@@ -77,7 +77,7 @@ def main_page():
 '''
 
 @app.route("/lab1")
-@app.route("/lab1/")  # ДОБАВИЛ ЭТУ СТРОКУ!
+@app.route("/lab1/")  
 def lab1_index():
     return '''
 <!doctype html>
@@ -251,22 +251,121 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
-@app.route("/400")
-def bad_request():
     return '''
 <!doctype html>
-<html>
+<html lang="ru">
 <head>
-    <title>400 Bad Request</title>
+    <meta charset="UTF-8">
+    <title>404 - Страница не найдена</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            color: #ff6b6b;
+        }
+        .error-title {
+            font-size: 36px;
+            margin: 20px 0;
+            color: #ffe66d;
+        }
+        .error-message {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0;
+            opacity: 0.9;
+        }
+        .tea-cup {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+        .navigation {
+            margin-top: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            background: #4ecdc4;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .btn:hover {
+            background: transparent;
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+        }
+        .search-box {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .suggestions {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-    <h1>400 Bad Request</h1>
-    <p>Сервер не может обработать запрос из-за клиентской ошибки (неправильный синтаксис, неверный запрос и т.д.)</p>
-    <a href="/">На главную</a>
+    <div class="container">
+        <div class="tea-cup">☕</div>
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Ой! Кажется, мы потерялись в цифровом пространстве</h2>
+        
+        <div class="error-message">
+            <p>Страница, которую вы ищете, упорхнула в параллельную вселенную или просто решила взять выходной.</p>
+            <p>Возможно, она прячется за одним из этих вариантов:</p>
+        </div>
+
+        <div class="search-box">
+            <p>🔍 <em>Пока вы здесь, почему бы не выпить чашечку чая?</em></p>
+        </div>
+
+        <div class="navigation">
+            <a href="/" class="btn">🏠 На главную</a>
+            <a href="/lab1" class="btn">📚 К лабораторным</a>
+            <a href="javascript:history.back()" class="btn">↩️ Назад</a>
+        </div>
+
+        <div class="suggestions">
+            <p>P.S. Если вы уверены, что страница должна быть здесь, возможно, она просто замаскировалась под ошибку 418</p>
+        </div>
+    </div>
 </body>
 </html>
-''', 400
+''', 404
 
 @app.route("/401")
 def unauthorized():
