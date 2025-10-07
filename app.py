@@ -891,7 +891,38 @@ def test_errors():
 
 # Лабораторная работа 2
 
-flowers_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
+
+flowers_list = [
+    {'id': 0, 'name': 'роза', 'price': 150, 'color': '#ff6b6b'},
+    {'id': 1, 'name': 'тюльпан', 'price': 80, 'color': '#e83e8c'},
+    {'id': 2, 'name': 'незабудка', 'price': 60, 'color': '#4ecdc4'},
+    {'id': 3, 'name': 'ромашка', 'price': 50, 'color': '#ffe66d'}
+]
+
+@app.route('/lab2/delete_flower/<int:flower_id>')
+def lab2_delete_flower(flower_id):
+    """Удаление цветка по ID"""
+    try:
+        # Проверяем существование цветка
+        if flower_id < 0 or flower_id >= len(flowers_list):
+            abort(404, description=f"Цветок с ID {flower_id} не найден")
+        
+        # Удаляем цветок
+        deleted_flower = flowers_list.pop(flower_id)
+        
+        # Обновляем ID оставшихся цветов
+        for i, flower in enumerate(flowers_list):
+            flower['id'] = i
+            
+        # Перенаправляем на страницу всех цветов
+        return redirect('/lab2/all_flowers')
+        
+    except Exception as e:
+        return f'''
+        <h1>Ошибка при удалении цветка</h1>
+        <p>Ошибка: {str(e)}</p>
+        <a href="/lab2/all_flowers">Вернуться к списку цветов</a>
+        ''', 500
 
 @app.route('/lab2/a')
 def lab2_a():
@@ -961,8 +992,8 @@ def lab2_flowers(flower_id):
 </html>
 '''
 
-@app.route('/lab2/add_flower/<name>')
-def lab2_add_flower(name):
+@app.route('/lab2/add_flower_old/<name>')
+def lab2_add_flower_old(name):
     flowers_list.append(name)
     return f'''
 <!doctype html>
@@ -1031,63 +1062,27 @@ def lab2_add_flower(name):
 </html>
 '''
 
-@app.route('/lab2/add_flower/')
-def lab2_add_flower_empty():
-    """Обработчик для случая, когда имя цветка не указано"""
-    return '''
-<!doctype html>
-<html>
-<head>
-    <title>Ошибка добавления цветка</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-        }
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #dc3545;
-        }
-        .navigation {
-            margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <h1>❌ Ошибка добавления цветка</h1>
+@app.route('/lab2/add_flower')
+def lab2_add_flower():
+    """Добавление нового цветка через форму"""
+    name = request.args.get('name')
+    price = request.args.get('price')
+    color = request.args.get('color', '#ff6b6b')
     
-    <div class="error-message">
-        <h2>400 - Неверный запрос</h2>
-        <p><strong>Вы не задали имя цветка!</strong></p>
-        <p>Пожалуйста, укажите название цветка в URL, например: <code>/lab2/add_flower/орхидея</code></p>
-    </div>
-
-    <div class="navigation">
-        <a href="/lab2/all_flowers" class="btn">📚 Посмотреть все цветы</a>
-        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
-        <a href="/" class="btn">🏠 На главную</a>
-    </div>
-</body>
-</html>
-''', 400
+    if name and price:
+        try:
+            new_flower = {
+                'id': len(flowers_list),
+                'name': name,
+                'price': int(price),
+                'color': color
+            }
+            flowers_list.append(new_flower)
+            return render_template('add_flower.html', name=name)
+        except ValueError:
+            return "Ошибка: цена должна быть числом", 400
+    
+    return render_template('add_flower.html')
 
 @app.route('/lab2/all_flowers')
 def lab2_all_flowers():
@@ -1096,7 +1091,7 @@ def lab2_all_flowers():
 
 @app.route('/lab2/clear_flowers')
 def lab2_clear_flowers():
-    """Роут для очистки списка цветов"""
+    """Очистка всей коллекции цветов"""
     flowers_list.clear()
     return '''
 <!doctype html>
@@ -1105,62 +1100,26 @@ def lab2_clear_flowers():
     <title>Коллекция очищена</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-        }
-        .success-message {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            padding: 30px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #17a2b8;
-            text-align: center;
-        }
-        .navigation {
-            margin: 30px 0;
-            text-align: center;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 8px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-        .btn-success {
-            background-color: #28a745;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .success-message { background: #d1ecf1; color: #0c5460; padding: 30px; border-radius: 10px; margin: 20px 0; text-align: center; }
+        .navigation { margin: 30px 0; text-align: center; }
+        .btn { display: inline-block; padding: 12px 25px; margin: 8px; background: #007bff; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
     </style>
 </head>
 <body>
     <h1>🗑️ Коллекция цветов очищена</h1>
-    
     <div class="success-message">
         <h2>✅ Все цветы успешно удалены!</h2>
-        <p>Коллекция цветов была полностью очищена.</p>
         <p style="font-size: 48px; margin: 20px 0;">🌱</p>
         <p>Теперь вы можете начать новую коллекцию!</p>
     </div>
-
     <div class="navigation">
         <a href="/lab2/all_flowers" class="btn">📚 Перейти к коллекции</a>
-        <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить первый цветок</a>
+        <a href="/lab2/add_flower" class="btn btn-success">➕ Добавить первый цветок</a>
         <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
-        <a href="/" class="btn">🏠 На главную</a>
     </div>
 </body>
 </html>
