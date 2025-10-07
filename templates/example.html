@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Шкуропатов Андрей. Лабораторная 2</title>
+    <title>Шкуропатов Андрей. Лабораторная {{ number_lab }}</title>
 </head>
 <body>
     <header>
-        WEB-программирование, часть 2. Лабораторная 2
+        WEB-программирование, часть 2. Лабораторная {{ number_lab }}
     </header>
 
     <main>
@@ -16,7 +16,7 @@
     </main>
 
     <footer>
-        &copy; {{ name }}, ФБИ-32, 3 курс, 2025
+        &copy; {{ name }}, ФБИ-{{ number_group }}, {{ number_course }} курс, 2025
     </footer>
 </body>
 </html>
