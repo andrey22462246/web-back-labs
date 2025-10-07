@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Лабораторная работа 2{% endblock %}.
+
+{# основной контент: #}
+{% block main %}
+    <div>Фраза: {{ pharse }}</div>
+    <div>Фраза: {{ pharse | title }}</div>
+    <div>Фраза: {{ pharse | striptags }}</div>
+    <div>Фраза: {{ pharse | safe }}</div>
+    <div>Фраза: {{ pharse | striptags | replace('сколько', 'много')
+        | replace('нам', 'тут') | upper }}</div>
+    <div>Фраза: {{ pharse | striptags | reverse }}</div>
+{% endblock %}

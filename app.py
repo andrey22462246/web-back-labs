@@ -860,7 +860,59 @@ def flowers(flower_id):
     if flower_id >= len(flowers_list):
         abort(404)
     else:
-        return "цветок: " + flowers_list[flower_id]
+        return f'''
+<!doctype html>
+<html>
+<head>
+    <title>Цветок #{flower_id}</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }}
+        .flower-info {{
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e83e8c;
+        }}
+        .navigation {{
+            margin: 20px 0;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }}
+        .btn:hover {{
+            background-color: #0056b3;
+        }}
+    </style>
+</head>
+<body>
+    <h1>🌺 Информация о цветке</h1>
+    
+    <div class="flower-info">
+        <h2>Цветок #{flower_id}</h2>
+        <p><strong>Название:</strong> {flowers_list[flower_id]}</p>
+        <p><strong>ID:</strong> {flower_id}</p>
+        <p><strong>Всего цветов в коллекции:</strong> {len(flowers_list)}</p>
+    </div>
+
+    <div class="navigation">
+        <a href="/lab2/all_flowers" class="btn">📚 Посмотреть все цветы</a>
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</body>
+</html>
+'''
 
 @app.route('/lab2/add_flower/<name>')
 def add_flower(name):
@@ -868,12 +920,326 @@ def add_flower(name):
     return f'''
 <!doctype html>
 <html>
-    <body>
-    <h1>Добавлен новый цветок</h1>
-    <p>Название нового цветка: {name} </p>
-    <p>Всего цветов: {len(flowers_list)}</p>
-    <p>Полный список: {flowers_list}</p>
-    </body>
+<head>
+    <title>Цветок добавлен</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }}
+        .success-message {{
+            background-color: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }}
+        .flower-list {{
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }}
+        .navigation {{
+            margin: 20px 0;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }}
+        .btn:hover {{
+            background-color: #0056b3;
+        }}
+    </style>
+</head>
+<body>
+    <h1>✅ Цветок успешно добавлен!</h1>
+    
+    <div class="success-message">
+        <h2>Новый цветок: "{name}"</h2>
+        <p>Цветок был добавлен в коллекцию.</p>
+    </div>
+
+    <div class="flower-list">
+        <h3>📊 Статистика коллекции:</h3>
+        <p><strong>Всего цветов:</strong> {len(flowers_list)}</p>
+        <p><strong>Полный список:</strong> {', '.join(flowers_list)}</p>
+    </div>
+
+    <div class="navigation">
+        <a href="/lab2/all_flowers" class="btn">📚 Посмотреть все цветы</a>
+        <a href="/lab2/clear_flowers" class="btn">🗑️ Очистить коллекцию</a>
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</body>
+</html>
+'''
+
+@app.route('/lab2/add_flower/')
+def add_flower_empty():
+    """Обработчик для случая, когда имя цветка не указано"""
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>Ошибка добавления цветка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .navigation {
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>❌ Ошибка добавления цветка</h1>
+    
+    <div class="error-message">
+        <h2>400 - Неверный запрос</h2>
+        <p><strong>Вы не задали имя цветка!</strong></p>
+        <p>Пожалуйста, укажите название цветка в URL, например: <code>/lab2/add_flower/орхидея</code></p>
+    </div>
+
+    <div class="navigation">
+        <a href="/lab2/all_flowers" class="btn">📚 Посмотреть все цветы</a>
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</body>
+</html>
+''', 400
+
+@app.route('/lab2/all_flowers')
+def all_flowers():
+    """Роут для вывода всех цветов и их количества"""
+    return f'''
+<!doctype html>
+<html>
+<head>
+    <title>Все цветы</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }}
+        .header {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .stats {{
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }}
+        .flower-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }}
+        .flower-card {{
+            background: white;
+            border: 2px solid #e83e8c;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }}
+        .flower-card:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }}
+        .flower-id {{
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }}
+        .flower-name {{
+            font-size: 18px;
+            font-weight: bold;
+            color: #e83e8c;
+        }}
+        .empty-message {{
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }}
+        .navigation {{
+            margin: 30px 0;
+            text-align: center;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }}
+        .btn:hover {{
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }}
+        .btn-danger {{
+            background-color: #dc3545;
+        }}
+        .btn-danger:hover {{
+            background-color: #c82333;
+        }}
+        .btn-success {{
+            background-color: #28a745;
+        }}
+        .btn-success:hover {{
+            background-color: #218838;
+        }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌺 Коллекция цветов</h1>
+        <p>Все прекрасные цветы в одном месте</p>
+    </div>
+
+    <div class="stats">
+        <h2>📊 Статистика коллекции</h2>
+        <p style="font-size: 24px; margin: 10px 0;"><strong>{len(flowers_list)}</strong> цветов</p>
+    </div>
+
+    {'<div class="empty-message"><h2>😔 Коллекция пуста</h2><p>Добавьте первый цветок, чтобы начать коллекцию!</p></div>' if len(flowers_list) == 0 else f'''
+    <div class="flower-grid">
+        {''.join([f'''
+        <div class="flower-card">
+            <div class="flower-id">ID: {i}</div>
+            <div class="flower-name">{flower}</div>
+            <a href="/lab2/flowers/{i}" style="color: #007bff; text-decoration: none; font-size: 12px;">подробнее →</a>
+        </div>
+        ''' for i, flower in enumerate(flowers_list)])}
+    </div>
+    '''}
+
+    <div class="navigation">
+        <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить цветок (пример)</a>
+        {'<a href="/lab2/clear_flowers" class="btn btn-danger">🗑️ Очистить коллекцию</a>' if len(flowers_list) > 0 else ''}
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</body>
+</html>
+'''
+
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    """Роут для очистки списка цветов"""
+    flowers_list.clear()
+    return '''
+<!doctype html>
+<html>
+<head>
+    <title>Коллекция очищена</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .success-message {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+            text-align: center;
+        }
+        .navigation {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗑️ Коллекция цветов очищена</h1>
+    
+    <div class="success-message">
+        <h2>✅ Все цветы успешно удалены!</h2>
+        <p>Коллекция цветов была полностью очищена.</p>
+        <p style="font-size: 48px; margin: 20px 0;">🌱</p>
+        <p>Теперь вы можете начать новую коллекцию!</p>
+    </div>
+
+    <div class="navigation">
+        <a href="/lab2/all_flowers" class="btn">📚 Перейти к коллекции</a>
+        <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить первый цветок</a>
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</body>
 </html>
 '''
 
@@ -895,3 +1261,8 @@ def example():
 @app.route('/lab2/')
 def lab2():
     return render_template('lab2.html')
+
+@app.route('/lab2/filters')
+def filters():
+    pharse = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
+    return render_template('filter.html', pharse = pharse)
