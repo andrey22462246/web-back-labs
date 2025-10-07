@@ -853,7 +853,7 @@ def a():
 def a2():
     return 'со слешом'
 
-flowers_list = ('роза', 'тюльпан', 'незабудка', 'ромашка')
+flowers_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
 
 @app.route('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
@@ -861,4 +861,18 @@ def flowers(flower_id):
         abort(404)
     else:
         return "цветок: " + flowers_list[flower_id]
-    
+
+@app.route('/lab2/add_flower/<name>')
+def add_flower(name):
+    flowers_list.append(name)
+    return f'''
+<!doctype html>
+<html>
+    <body>
+    <h1>Добавлен новый цветок</h1>
+    <p>Название нового цветка: {name} </p>
+    <p>Всего цветов: {len(flowers_list)}</p>
+    <p>Полный список: {flowers_list}</p>
+    </body>
+</html>
+'''
