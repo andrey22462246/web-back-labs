@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2 - Калькулятор{% endblock %}
+
+{% block main %}
+<style>
+    .calculator {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .number-display {
+        text-align: center;
+        margin: 30px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .number-a {
+        font-size: 2.5em;
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    .number-b {
+        font-size: 2.5em;
+        color: #e83e8c;
+        font-weight: bold;
+    }
+    
+    .operator {
+        font-size: 1.5em;
+        margin: 0 10px;
+        color: #6c757d;
+    }
+    
+    .operations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin: 30px 0;
+    }
+    
+    .operation-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .operation-name {
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+        text-transform: uppercase;
+    }
+    
+    .operation-result {
+        font-size: 1.1em;
+        color: #212529;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .error {
+        color: #dc3545;
+    }
+    
+    .success {
+        color: #28a745;
+    }
+    
+    .quick-links {
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+    
+    .btn:hover {
+        background: #5a6fd8;
+    }
+    
+    .examples {
+        background: #e9ecef;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="calculator">
+    <h1>🧮 Математический калькулятор</h1>
+    
+    <div class="number-display">
+        <span class="number-a">{{ a }}</span>
+        <span class="operator">и</span>
+        <span class="number-b">{{ b }}</span>
+    </div>
+    
+    <div class="quick-links">
+        <a href="/lab2/calc/10/5" class="btn">10 и 5</a>
+        <a href="/lab2/calc/25/4" class="btn">25 и 4</a>
+        <a href="/lab2/calc/100/3" class="btn">100 и 3</a>
+        <a href="/lab2/calc/8/8" class="btn">8 и 8</a>
+    </div>
+
+    <h2>Результаты операций:</h2>
+    <div class="operations-grid">
+        {% for name, result in operations.items() %}
+        <div class="operation-card">
+            <div class="operation-name">{{ name }}</div>
+            <div class="operation-result {% if 'Ошибка' in result %}error{% else %}success{% endif %}">
+                {{ result|safe }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>Дополнительные операции:</h2>
+    <div class="operations-grid">
+        {% for name, result in additional_ops.items() %}
+        <div class="operation-card">
+            <div class="operation-name">{{ name }}</div>
+            <div class="operation-result {% if 'Ошибка' in result or 'Слишком' in result %}error{% else %}success{% endif %}">
+                {{ result|safe }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="examples">
+        <h3>Примеры использования:</h3>
+        <div>
+            <a href="/lab2/calc/" class="btn">По умолчанию (1 и 1)</a>
+            <a href="/lab2/calc/15" class="btn">Только первое число (15 и 1)</a>
+            <a href="/lab2/calc/42/7" class="btn">42 и 7</a>
+            <a href="/lab2/calc/0/0" class="btn">0 и 0</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

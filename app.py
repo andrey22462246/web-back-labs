@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
 import datetime
+import math
 
 app = Flask(__name__)
 
@@ -68,6 +69,7 @@ def main_page():
     <nav>
         <ul>
             <li><a href="/lab1">Первая лабораторная</a></li>
+            <li><a href="/lab2">Вторая лабораторная</a></li>
         </ul>
     </nav>
     
@@ -77,6 +79,7 @@ def main_page():
 </body>
 </html>
 '''
+
 @app.route("/lab1")
 @app.route("/lab1/")
 def lab1_index():
@@ -842,21 +845,21 @@ def test_errors():
 </body>
 </html>
 '''
-if __name__ == '__main__':
-    app.run(debug=False)
 
-@app.route('/lab2/a')
-def a():
-    return 'без слэша'
-
-@app.route('/lab2/a/')
-def a2():
-    return 'со слешом'
+# Лабораторная работа 2
 
 flowers_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
 
+@app.route('/lab2/a')
+def lab2_a():
+    return 'без слэша'
+
+@app.route('/lab2/a/')
+def lab2_a2():
+    return 'со слешом'
+
 @app.route('/lab2/flowers/<int:flower_id>')
-def flowers(flower_id):
+def lab2_flowers(flower_id):
     if flower_id >= len(flowers_list):
         abort(404)
     else:
@@ -915,7 +918,7 @@ def flowers(flower_id):
 '''
 
 @app.route('/lab2/add_flower/<name>')
-def add_flower(name):
+def lab2_add_flower(name):
     flowers_list.append(name)
     return f'''
 <!doctype html>
@@ -984,7 +987,7 @@ def add_flower(name):
 '''
 
 @app.route('/lab2/add_flower/')
-def add_flower_empty():
+def lab2_add_flower_empty():
     """Обработчик для случая, когда имя цветка не указано"""
     return '''
 <!doctype html>
@@ -1041,139 +1044,12 @@ def add_flower_empty():
 ''', 400
 
 @app.route('/lab2/all_flowers')
-def all_flowers():
+def lab2_all_flowers():
     """Роут для вывода всех цветов и их количества"""
-    return f'''
-<!doctype html>
-<html>
-<head>
-    <title>Все цветы</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-        }}
-        .header {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .stats {{
-            background-color: #e9ecef;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }}
-        .flower-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }}
-        .flower-card {{
-            background: white;
-            border: 2px solid #e83e8c;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }}
-        .flower-card:hover {{
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }}
-        .flower-id {{
-            font-size: 12px;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }}
-        .flower-name {{
-            font-size: 18px;
-            font-weight: bold;
-            color: #e83e8c;
-        }}
-        .empty-message {{
-            background-color: #fff3cd;
-            color: #856404;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-            border-left: 4px solid #ffc107;
-        }}
-        .navigation {{
-            margin: 30px 0;
-            text-align: center;
-        }}
-        .btn {{
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 8px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }}
-        .btn:hover {{
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }}
-        .btn-danger {{
-            background-color: #dc3545;
-        }}
-        .btn-danger:hover {{
-            background-color: #c82333;
-        }}
-        .btn-success {{
-            background-color: #28a745;
-        }}
-        .btn-success:hover {{
-            background-color: #218838;
-        }}
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🌺 Коллекция цветов</h1>
-        <p>Все прекрасные цветы в одном месте</p>
-    </div>
-
-    <div class="stats">
-        <h2>📊 Статистика коллекции</h2>
-        <p style="font-size: 24px; margin: 10px 0;"><strong>{len(flowers_list)}</strong> цветов</p>
-    </div>
-
-    {'<div class="empty-message"><h2>😔 Коллекция пуста</h2><p>Добавьте первый цветок, чтобы начать коллекцию!</p></div>' if len(flowers_list) == 0 else f'''
-    <div class="flower-grid">
-        {''.join([f'''
-        <div class="flower-card">
-            <div class="flower-id">ID: {i}</div>
-            <div class="flower-name">{flower}</div>
-            <a href="/lab2/flowers/{i}" style="color: #007bff; text-decoration: none; font-size: 12px;">подробнее →</a>
-        </div>
-        ''' for i, flower in enumerate(flowers_list)])}
-    </div>
-    '''}
-
-    <div class="navigation">
-        <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить цветок (пример)</a>
-        {'<a href="/lab2/clear_flowers" class="btn btn-danger">🗑️ Очистить коллекцию</a>' if len(flowers_list) > 0 else ''}
-        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
-        <a href="/" class="btn">🏠 На главную</a>
-    </div>
-</body>
-</html>
-'''
+    return render_template('all_flowers.html', flowers_list=flowers_list)
 
 @app.route('/lab2/clear_flowers')
-def clear_flowers():
+def lab2_clear_flowers():
     """Роут для очистки списка цветов"""
     flowers_list.clear()
     return '''
@@ -1244,7 +1120,7 @@ def clear_flowers():
 '''
 
 @app.route('/lab2/example')
-def example():
+def lab2_example():
     name = 'Шкуропатов Андрей'
     number_lab = 2
     number_course = 3
@@ -1255,14 +1131,64 @@ def example():
         {'name':'Апельсины', 'price': 80},
         {'name':'Мандарины', 'price': 95},
         {'name':'Манго', 'price': 321}
-        ]
-    return render_template('example.html', name=name, number_lab=number_lab, number_course=number_course, number_group=number_group, fruits=fruits)
+    ]
+    return render_template('example.html', 
+                         name=name, 
+                         number_lab=number_lab, 
+                         number_course=number_course, 
+                         number_group=number_group, 
+                         fruits=fruits)
 
 @app.route('/lab2/')
-def lab2():
+def lab2_index():
     return render_template('lab2.html')
 
 @app.route('/lab2/filters')
-def filters():
+def lab2_filters():
     pharse = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
-    return render_template('filter.html', pharse = pharse)
+    return render_template('filters.html', pharse=pharse)
+
+# Калькулятор
+@app.route('/lab2/calc/')
+def lab2_calc_default():
+    """Перенаправление на калькулятор с значениями по умолчанию"""
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>')
+def lab2_calc_single(a):
+    """Перенаправление на калькулятор с одним числом и вторым по умолчанию"""
+    return redirect(f'/lab2/calc/{a}/1')
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def lab2_calc(a, b):
+    """Калькулятор с двумя числами"""
+    
+    # Выполняем математические операции
+    operations = {
+        'Сложение': f'{a} + {b} = {a + b}',
+        'Вычитание': f'{a} - {b} = {a - b}',
+        'Умножение': f'{a} × {b} = {a * b}',
+        'Деление': f'{a} ÷ {b} = {a / b:.2f}' if b != 0 else f'{a} ÷ {b} = Ошибка (деление на ноль)',
+        'Возведение в степень': f'{a}<sup>{b}</sup> = {a ** b}',
+        'Целочисленное деление': f'{a} // {b} = {a // b}' if b != 0 else f'{a} // {b} = Ошибка (деление на ноль)',
+        'Остаток от деления': f'{a} % {b} = {a % b}' if b != 0 else f'{a} % {b} = Ошибка (деление на ноль)',
+    }
+    
+    # Дополнительные математические функции
+    additional_ops = {
+        'Квадратный корень a': f'√{a} = {math.sqrt(a):.2f}' if a >= 0 else f'√{a} = Ошибка (отрицательное число)',
+        'Квадратный корень b': f'√{b} = {math.sqrt(b):.2f}' if b >= 0 else f'√{b} = Ошибка (отрицательное число)',
+        'Модуль a': f'|{a}| = {abs(a)}',
+        'Модуль b': f'|{b}| = {abs(b)}',
+        'Факториал a': f'{a}! = {math.factorial(a)}' if a >= 0 and a <= 20 else f'{a}! = Слишком большое число',
+        'Факториал b': f'{b}! = {math.factorial(b)}' if b >= 0 and b <= 20 else f'{b}! = Слишком большое число',
+    }
+    
+    return render_template('calc.html', 
+                         a=a, 
+                         b=b, 
+                         operations=operations, 
+                         additional_ops=additional_ops)
+
+if __name__ == '__main__':
+    app.run(debug=False)

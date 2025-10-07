@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2 - Коллекция цветов{% endblock %}
+
+{% block main %}
+<style>
+    .flower-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .flower-card {
+        background: white;
+        border: 2px solid #e83e8c;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .flower-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .flower-id {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .flower-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e83e8c;
+    }
+    
+    .stats {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .empty-message {
+        background: #fff3cd;
+        color: #856404;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .navigation {
+        text-align: center;
+        margin: 30px 0;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+    
+    .btn:hover {
+        background-color: #0056b3;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    
+    .btn-success {
+        background-color: #28a745;
+    }
+    
+    .btn-success:hover {
+        background-color: #218838;
+    }
+</style>
+
+<h1>🌺 Коллекция цветов</h1>
+
+<div class="stats">
+    <h2>📊 Статистика коллекции</h2>
+    <p style="font-size: 24px; margin: 10px 0;"><strong>{{ flowers_list|length }}</strong> цветов</p>
+</div>
+
+{% if flowers_list|length == 0 %}
+<div class="empty-message">
+    <h2>😔 Коллекция пуста</h2>
+    <p>Добавьте первый цветок, чтобы начать коллекцию!</p>
+</div>
+{% else %}
+<div class="flower-grid">
+    {% for flower in flowers_list %}
+    <div class="flower-card">
+        <div class="flower-id">ID: {{ loop.index0 }}</div>
+        <div class="flower-name">{{ flower }}</div>
+        <a href="/lab2/flowers/{{ loop.index0 }}" style="color: #007bff; text-decoration: none; font-size: 12px;">подробнее →</a>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="navigation">
+    <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить цветок (пример)</a>
+    {% if flowers_list|length > 0 %}
+    <a href="/lab2/clear_flowers" class="btn btn-danger">🗑️ Очистить коллекцию</a>
+    {% endif %}
+    <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+</div>
+{% endblock %}
