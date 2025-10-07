@@ -883,4 +883,11 @@ def example():
     number_lab = 2
     number_course = 3
     number_group = 32
-    return render_template('example.html', name=name, number_lab=number_lab, number_course=number_course, number_group=number_group)
+    fruits = [
+        {'name':'Яблоки', 'price': 100},
+        {'name':'Груши', 'price': 120},
+        {'name':'Апельсины', 'price': 80},
+        {'name':'Мандарины', 'price': 95},
+        {'name':'Манго', 'price': 321}
+        ]
+    return render_template('example.html', name=name, number_lab=number_lab, number_course=number_course, number_group=number_group, fruits=fruits)
