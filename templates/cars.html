@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2 - Коллекция автомобилей{% endblock %}
+
+{% block main %}
+<style>
+    .cars-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .stats {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin: 20px 0;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .cars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+    }
+    
+    .car-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+    
+    .car-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .car-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 3px solid #007bff;
+    }
+    
+    .car-info {
+        padding: 20px;
+    }
+    
+    .car-name {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 8px;
+    }
+    
+    .car-description {
+        color: #6c757d;
+        line-height: 1.6;
+        font-size: 0.95em;
+    }
+    
+    .car-number {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0, 123, 255, 0.9);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    
+    .car-card {
+        position: relative;
+    }
+    
+    .navigation {
+        text-align: center;
+        margin: 40px 0;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        margin: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .empty-message {
+        background: #fff3cd;
+        color: #856404;
+        padding: 40px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 40px 0;
+        border-left: 4px solid #ffc107;
+    }
+    
+    .filter-buttons {
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .filter-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 5px;
+        background: #e9ecef;
+        color: #495057;
+        text-decoration: none;
+        border-radius: 20px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: #007bff;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .cars-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .car-card {
+            margin: 0 10px;
+        }
+    }
+</style>
+
+<div class="cars-container">
+    <h1>🚗 Коллекция автомобилей</h1>
+    
+    <div class="stats">
+        <h2>📊 Статистика коллекции</h2>
+        <p style="font-size: 1.5em; margin: 10px 0;">
+            <strong>{{ cars|length }}</strong> автомобилей в коллекции
+        </p>
+        <p>От электрических седанов до легендарных суперкаров</p>
+    </div>
+
+    {% if cars|length == 0 %}
+    <div class="empty-message">
+        <h2>🚫 Коллекция пуста</h2>
+        <p>Автомобили временно отсутствуют в коллекции</p>
+    </div>
+    {% else %}
+    <div class="cars-grid">
+        {% for car in cars %}
+        <div class="car-card">
+            <div class="car-number">{{ loop.index }}</div>
+            <img src="{{ url_for('static', filename=car.image) }}" 
+                 alt="{{ car.name }}" 
+                 class="car-image"
+                 onerror="this.src='{{ url_for('static', filename='car_placeholder.jpg') }}'">
+            <div class="car-info">
+                <div class="car-name">{{ car.name }}</div>
+                <div class="car-description">{{ car.description }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="navigation">
+        <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
+        <a href="/lab2/books" class="btn">📚 К книгам</a>
+        <a href="/lab2/all_flowers" class="btn">🌺 К цветам</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
+</div>
+{% endblock %}

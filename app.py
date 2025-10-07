@@ -1190,5 +1190,144 @@ def lab2_calc(a, b):
                          operations=operations, 
                          additional_ops=additional_ops)
 
+books_list = [
+    {'author': 'Фёдор Достоевский', 'title': 'Преступление и наказание', 'genre': 'Роман', 'pages': 671},
+    {'author': 'Лев Толстой', 'title': 'Война и мир', 'genre': 'Роман-эпопея', 'pages': 1225},
+    {'author': 'Михаил Булгаков', 'title': 'Мастер и Маргарита', 'genre': 'Роман', 'pages': 480},
+    {'author': 'Антон Чехов', 'title': 'Рассказы', 'genre': 'Рассказ', 'pages': 320},
+    {'author': 'Александр Пушкин', 'title': 'Евгений Онегин', 'genre': 'Роман в стихах', 'pages': 240},
+    {'author': 'Николай Гоголь', 'title': 'Мёртвые души', 'genre': 'Поэма', 'pages': 352},
+    {'author': 'Иван Тургенев', 'title': 'Отцы и дети', 'genre': 'Роман', 'pages': 288},
+    {'author': 'Александр Островский', 'title': 'Гроза', 'genre': 'Драма', 'pages': 120},
+    {'author': 'Михаил Лермонтов', 'title': 'Герой нашего времени', 'genre': 'Роман', 'pages': 224},
+    {'author': 'Иван Гончаров', 'title': 'Обломов', 'genre': 'Роман', 'pages': 640},
+    {'author': 'Александр Грибоедов', 'title': 'Горе от ума', 'genre': 'Комедия', 'pages': 160},
+    {'author': 'Николай Лесков', 'title': 'Левша', 'genre': 'Повесть', 'pages': 96}
+]
+
+@app.route('/lab2/books')
+def lab2_books():
+    """Страница со списком книг"""
+    return render_template('books.html', books=books_list)
+
+# Список автомобилей
+cars_list = [
+    {
+        'name': 'Tesla Model S',
+        'image': 'tesla_model_s.jpg',
+        'description': 'Электрический седан премиум-класса с автопилотом и ускорением 0-100 км/ч за 2.1 секунды'
+    },
+    {
+        'name': 'BMW M5',
+        'image': 'bmw_m5.jpg', 
+        'description': 'Спортивный седан с двигателем V8 мощностью 600 л.с. и полным приводом xDrive'
+    },
+    {
+        'name': 'Mercedes-Benz S-Class',
+        'image': 'mercedes_s_class.jpg',
+        'description': 'Флагманский седан люкс-класса с технологиями автономного вождения и роскошным салоном'
+    },
+    {
+        'name': 'Audi RS6',
+        'image': 'audi_rs6.jpg',
+        'description': 'Универсал с двигателем V8 би-турбо мощностью 600 л.с. и спортивной подвеской'
+    },
+    {
+        'name': 'Porsche 911',
+        'image': 'porsche_911.jpg',
+        'description': 'Легендарный спортивный автомобиль с задним расположением двигателя и уникальным дизайном'
+    },
+    {
+        'name': 'Lamborghini Huracan',
+        'image': 'lamborghini_huracan.jpg',
+        'description': 'Суперкар с двигателем V10 мощностью 640 л.с. и агрессивным дизайном'
+    },
+    {
+        'name': 'Ferrari F8 Tributo',
+        'image': 'ferrari_f8.jpg',
+        'description': 'Среднемоторный спорткар с двигателем V8 мощностью 720 л.с. и технологиями F1'
+    },
+    {
+        'name': 'Rolls-Royce Phantom',
+        'image': 'rolls_royce_phantom.jpg',
+        'description': 'Ультра-люксовый седан ручной сборки с бесшумным салоном и индивидуальным интерьером'
+    },
+    {
+        'name': 'Bentley Continental GT',
+        'image': 'bentley_continental.jpg',
+        'description': 'Гранд-турер с двигателем W12 и сочетанием роскоши с высокими динамическими характеристиками'
+    },
+    {
+        'name': 'Ford Mustang',
+        'image': 'ford_mustang.jpg',
+        'description': 'Американский маслкар с двигателем V8 и культовым дизайном'
+    },
+    {
+        'name': 'Chevrolet Corvette',
+        'image': 'chevrolet_corvette.jpg',
+        'description': 'Спортивный автомобиль с переднем расположением двигателя V8 и доступной ценой'
+    },
+    {
+        'name': 'Jeep Wrangler',
+        'image': 'jeep_wrangler.jpg',
+        'description': 'Внедорожник с подключаемым полным приводом и съемными дверями для офф-роуда'
+    },
+    {
+        'name': 'Land Rover Defender',
+        'image': 'land_rover_defender.jpg',
+        'description': 'Легендарный внедорожник с современными технологиями и выдающейся проходимостью'
+    },
+    {
+        'name': 'Toyota Land Cruiser',
+        'image': 'toyota_land_cruiser.jpg',
+        'description': 'Надежный внедорожник с рамной конструкцией и репутацией неубиваемого автомобиля'
+    },
+    {
+        'name': 'Volkswagen Golf GTI',
+        'image': 'vw_golf_gti.jpg',
+        'description': 'Хот-хэтч с богатой спортивной историей и отличной управляемостью'
+    },
+    {
+        'name': 'Subaru WRX STI',
+        'image': 'subaru_wrx.jpg',
+        'description': 'Спортивный седан с оппозитным двигателем и симметричным полным приводом'
+    },
+    {
+        'name': 'Nissan GT-R',
+        'image': 'nissan_gtr.jpg',
+        'description': 'Японский суперкар с двигателем V6 би-турбо и прозвищем "Бог"'
+    },
+    {
+        'name': 'Mazda MX-5 Miata',
+        'image': 'mazda_mx5.jpg',
+        'description': 'Компактный родстер с идеальной развесовкой и доступной ценой для настоящего драйва'
+    },
+    {
+        'name': 'Honda Civic Type R',
+        'image': 'honda_civic_type_r.jpg',
+        'description': 'Хот-хэтч с турбодвигателем и рекордом на Нюрбургринге среди переднеприводных автомобилей'
+    },
+    {
+        'name': 'McLaren 720S',
+        'image': 'mclaren_720s.jpg',
+        'description': 'Суперкар с карбоновым монококом и двигателем V8 мощностью 720 л.с.'
+    },
+    {
+        'name': 'Aston Martin DB11',
+        'image': 'aston_martin_db11.jpg',
+        'description': 'Гранд-турер с элегантным британским дизайном и двигателем от Mercedes-AMG'
+    },
+    {
+        'name': 'Lexus LC 500',
+        'image': 'lexus_lc500.jpg',
+        'description': 'Купэ люкс-класса с атмосферным двигателем V8 и футуристичным дизайном'
+    }
+]
+
+@app.route('/lab2/cars')
+def lab2_cars():
+    """Страница со списком автомобилей"""
+    return render_template('cars.html', cars=cars_list)
+
 if __name__ == '__main__':
     app.run(debug=False)
