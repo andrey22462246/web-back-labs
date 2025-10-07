@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шкуропатов Андрей. {% block lab %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        .global-nav {
+            background: #2c3e50;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .site-title {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .current-lab {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        WEB-программирование, часть 2. {{ self.lab() }}
-    </header>
+    <nav class="global-nav">
+        <div class="nav-container">
+            <div class="site-title">
+                🎓 WEB-программирование, часть 2
+            </div>
+            <div class="nav-links">
+                <a href="/">🏠 Главная</a>
+                <a href="/lab1">🔧 Лаба 1</a>
+                <a href="/lab2">🚀 Лаба 2</a>
+                <span class="current-lab">{{ self.lab() }}</span>
+            </div>
+        </div>
+    </nav>
 
     <main>
         {% block main %}{% endblock %}

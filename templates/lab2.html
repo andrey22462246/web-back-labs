@@ -1,42 +1,193 @@
 {% extends "base.html" %}
 
-{# номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 2{% endblock %}
 
-{# основной контент: #}
 {% block main %}
-    <h1>Шаблоны</h1>
-    <div>Тема лабораторной - шаблоны. Список сделанных страниц:</div>
-    <ol>
-        <li>
-            <a href="/lab2/example">Example</a>
-        </li>
-        <li>
-            <a href="/lab2/filters">Фильтры</a>
-        </li>
-        <li>
-            <a href="/lab2/calc/">Калькулятор</a>
-        </li>
-        <li>
-            <a href="/lab2/all_flowers">Коллекция цветов</a>
-        </li>
-        <li>
-            <a href="/lab2/books">Список книг</a>
-        </li>
-        <li>
-            <a href="/lab2/cars">Коллекция автомобилей</a>
-        </li>
-        <li>
-            <a href="/lab2/flowers/0">Пример цветка (роза)</a>
-        </li>
-    </ol>
+<style>
+    .lab-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .section {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin: 20px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .link-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+        transition: all 0.3s ease;
+    }
+    
+    .link-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .link-card h3 {
+        margin-top: 0;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .link-card a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+    }
+    
+    .link-card a:hover {
+        text-decoration: underline;
+    }
+    
+    .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .action-btn {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+    
+    .action-btn:hover {
+        background: #0056b3;
+    }
+    
+    .category {
+        color: #6c757d;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
+</style>
 
-    <h2>Быстрые ссылки:</h2>
-    <div class="quick-links">
-        <a href="/lab2/calc/10/5" class="btn">🧮 Калькулятор: 10 и 5</a>
-        <a href="/lab2/add_flower/орхидея" class="btn">🌺 Добавить орхидею</a>
-        <a href="/lab2/clear_flowers" class="btn">🗑️ Очистить цветы</a>
-        <a href="/lab2/books" class="btn">📚 Список книг</a>
-        <a href="/lab2/cars" class="btn">🚗 Автомобили</a>
+<div class="lab-container">
+    <div class="section">
+        <h1>🚀 Лабораторная работа 2: Шаблоны Jinja2</h1>
+        <p>Изучение работы с шаблонами, наследованием, фильтрами и циклами в Flask.</p>
     </div>
+
+    <div class="section">
+        <h2>📋 Список всех страниц лабораторной:</h2>
+        
+        <div class="links-grid">
+            <!-- Базовые примеры -->
+            <div class="link-card">
+                <span class="category">Базовые примеры</span>
+                <h3>📝 Example</h3>
+                <p>Пример работы с переменными и циклами в шаблоне</p>
+                <a href="/lab2/example">Перейти →</a>
+            </div>
+            
+            <div class="link-card">
+                <span class="category">Базовые примеры</span>
+                <h3>🔧 Фильтры</h3>
+                <p>Демонстрация работы встроенных фильтров Jinja2</p>
+                <a href="/lab2/filters">Перейти →</a>
+            </div>
+
+            <!-- Калькулятор -->
+            <div class="link-card">
+                <span class="category">Калькулятор</span>
+                <h3>🧮 Калькулятор</h3>
+                <p>Математические операции с двумя числами</p>
+                <a href="/lab2/calc/">Перейти →</a>
+            </div>
+
+            <!-- Цветы -->
+            <div class="link-card">
+                <span class="category">Коллекция цветов</span>
+                <h3>🌺 Все цветы</h3>
+                <p>Просмотр всей коллекции цветов</p>
+                <a href="/lab2/all_flowers">Перейти →</a>
+            </div>
+            
+            <div class="link-card">
+                <span class="category">Коллекция цветов</span>
+                <h3>➕ Добавить цветок</h3>
+                <p>Добавление нового цветка в коллекцию</p>
+                <a href="/lab2/add_flower/орхидея">Перейти →</a>
+            </div>
+            
+            <div class="link-card">
+                <span class="category">Коллекция цветов</span>
+                <h3>🗑️ Очистить цветы</h3>
+                <p>Очистка всей коллекции цветов</p>
+                <a href="/lab2/clear_flowers">Перейти →</a>
+            </div>
+            
+            <div class="link-card">
+                <span class="category">Коллекция цветов</span>
+                <h3>🌹 Пример цветка</h3>
+                <p>Страница отдельного цветка (роза)</p>
+                <a href="/lab2/flowers/0">Перейти →</a>
+            </div>
+
+            <!-- Книги -->
+            <div class="link-card">
+                <span class="category">Библиотека</span>
+                <h3>📚 Список книг</h3>
+                <p>Коллекция классической литературы</p>
+                <a href="/lab2/books">Перейти →</a>
+            </div>
+
+            <!-- Автомобили -->
+            <div class="link-card">
+                <span class="category">Автомобили</span>
+                <h3>🚗 Коллекция авто</h3>
+                <p>Галерея автомобилей с описаниями</p>
+                <a href="/lab2/cars">Перейти →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚡ Быстрые действия:</h2>
+        <div class="quick-actions">
+            <a href="/lab2/calc/10/5" class="action-btn">🧮 Калькулятор (10 и 5)</a>
+            <a href="/lab2/add_flower/тюльпан" class="action-btn">🌷 Добавить тюльпан</a>
+            <a href="/lab2/flowers/1" class="action-btn">🌼 Посмотреть тюльпан</a>
+            <a href="/lab2/books" class="action-btn">📚 Открыть библиотеку</a>
+            <a href="/lab2/cars" class="action-btn">🚗 Показать автомобили</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📊 Статистика лабораторной:</h2>
+        <ul>
+            <li><strong>Всего страниц:</strong> 8 основных страниц</li>
+            <li><strong>Шаблонов создано:</strong> 5 (base, lab2, calc, all_flowers, books, cars)</li>
+            <li><strong>Коллекций данных:</strong> 3 (цветы, книги, автомобили)</li>
+            <li><strong>Обработчиков:</strong> 12 роутов</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
+
+@app.template_filter('reverse')
+def reverse_filter(s):
+    """Фильтр для обращения строки"""
+    return s[::-1]

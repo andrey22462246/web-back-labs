@@ -47,9 +47,14 @@ def main_page():
             text-decoration: none;
             color: #2c3e50;
             font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: block;
         }}
         nav a:hover {{
-            color: #e74c3c;
+            background-color: #2c3e50;
+            color: white;
         }}
         footer {{
             margin-top: 30px;
@@ -59,6 +64,29 @@ def main_page():
             text-align: center;
             border-radius: 5px;
         }}
+        .lab-links {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }}
+        .lab-card {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }}
+        .lab-card h3 {{
+            margin-top: 0;
+            color: #2c3e50;
+        }}
+        .lab-card.lab1 {{
+            border-left-color: #e74c3c;
+        }}
+        .lab-card.lab2 {{
+            border-left-color: #27ae60;
+        }}
     </style>
 </head>
 <body>
@@ -67,11 +95,26 @@ def main_page():
     </header>
     
     <nav>
+        <h3>Быстрая навигация:</h3>
         <ul>
-            <li><a href="/lab1">Первая лабораторная</a></li>
-            <li><a href="/lab2">Вторая лабораторная</a></li>
+            <li><a href="/lab1">🔧 Лабораторная работа 1</a></li>
+            <li><a href="/lab2">🚀 Лабораторная работа 2</a></li>
         </ul>
     </nav>
+
+    <div class="lab-links">
+        <div class="lab-card lab1">
+            <h3>📋 Лабораторная работа 1</h3>
+            <p>Основы Flask: роутинг, обработка ошибок, заголовки</p>
+            <a href="/lab1">Перейти к лабораторной →</a>
+        </div>
+        
+        <div class="lab-card lab2">
+            <h3>🚀 Лабораторная работа 2</h3>
+            <p>Шаблоны Jinja2: наследование, фильтры, циклы</p>
+            <a href="/lab2">Перейти к лабораторной →</a>
+        </div>
+    </div>
     
     <footer>
         <p>Шкуропатов Андрей Александрович, ФБИ-32, 3 курс, {current_year} год</p>
@@ -1145,8 +1188,9 @@ def lab2_index():
 
 @app.route('/lab2/filters')
 def lab2_filters():
-    pharse = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
-    return render_template('filters.html', pharse=pharse)
+    """Страница с демонстрацией фильтров"""
+    phrase = "О сколько нам открытий чудных готовит просвещенья дух"
+    return render_template('filters.html', phrase=phrase)
 
 # Калькулятор
 @app.route('/lab2/calc/')
@@ -1328,6 +1372,8 @@ cars_list = [
 def lab2_cars():
     """Страница со списком автомобилей"""
     return render_template('cars.html', cars=cars_list)
+
+
 
 if __name__ == '__main__':
     app.run(debug=False)

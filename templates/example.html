@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,6 +12,28 @@
         {% endif %}. Лабораторная {{ number_lab }}
     </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        .navigation {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -30,6 +52,11 @@
             {% endfor %}
         </ul>
     </main>
+
+    <div class="navigation">
+        <a href="/lab2" class="btn">🔙 Вернуться к лабораторной 2</a>
+        <a href="/" class="btn">🏠 На главную</a>
+    </div>
 
     <footer>
         &copy; 
