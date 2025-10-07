@@ -911,6 +911,7 @@ def lab2_flowers(flower_id):
 <html>
 <head>
     <title>Цветок #{flower_id}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -968,6 +969,7 @@ def lab2_add_flower(name):
 <html>
 <head>
     <title>Цветок добавлен</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -1037,6 +1039,7 @@ def lab2_add_flower_empty():
 <html>
 <head>
     <title>Ошибка добавления цветка</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -1100,6 +1103,7 @@ def lab2_clear_flowers():
 <html>
 <head>
     <title>Коллекция очищена</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
