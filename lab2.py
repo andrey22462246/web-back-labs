@@ -118,7 +118,7 @@ def lab2_add_flower():
                 'price': int(price),
                 'color': color
             }
-            flowers_list.lab2end(new_flower)
+            flowers_list.append(new_flower)
             return render_template('add_flower.html', name=name)
         except ValueError:
             return "Ошибка: цена должна быть числом", 400
