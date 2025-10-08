@@ -1,12 +1,14 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
 from lab1 import lab1
 from lab2 import lab2
+from lab3 import lab3
 import datetime
 import math
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 error_404_log = []
 
@@ -103,6 +105,7 @@ def main_page():
         <ul>
             <li><a href="/lab1">🔧 Лабораторная работа 1</a></li>
             <li><a href="/lab2">🚀 Лабораторная работа 2</a></li>
+            <li><a href="/lab3">🍪 Лабораторная работа 3</a></li>
         </ul>
     </nav>
 
@@ -117,6 +120,12 @@ def main_page():
             <h3>🚀 Лабораторная работа 2</h3>
             <p>Шаблоны Jinja2: наследование, фильтры, циклы</p>
             <a href="/lab2">Перейти к лабораторной →</a>
+        </div>
+
+        <div class="lab-card lab3">
+            <h3>🍪 Лабораторная работа 3</h3>
+            <p>Формы(GET), cookie</p>
+            <a href="/lab3">Перейти к лабораторной →</a>
         </div>
     </div>
     
