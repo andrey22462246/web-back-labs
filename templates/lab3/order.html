@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 3{% endblock %}
+{% block main %}
+    <h1>Заказ напитка</h1>
+    
+    <div class="price-info">
+        <p><strong>Стоимость напитков:</strong></p>
+        <ul>
+            <li>Кофе - 120 рублей</li>
+            <li>Чёрный чай - 80 рублей</li>
+            <li>Зелёный чай - 70 рублей</li>
+        </ul>
+        
+        <p><strong>Добавки:</strong></p>
+        <ul>
+            <li>Молоко - 30 рублей</li>
+            <li>Сахар - 10 рублей</li>
+        </ul>
+    </div>
+
+    <form action="/lab3/pay"  class="order-form">
+        <div class="form-section">
+            <div class="section-title">Напиток:</div>
+            <label class="radio-label">
+                <input type="radio" value="cofee" name="drink" checked>кофе (120 руб.)
+            </label>
+            <label class="radio-label">
+                <input type="radio" value="black-tea" name="drink">чёрный чай (80 руб.)
+            </label>
+            <label class="radio-label">
+                <input type="radio" value="green-tea" name="drink">зелёный чай (70 руб.)
+            </label>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">Добавки:</div>
+            <label class="checkbox-label">
+                <input type="checkbox" name="milk">молоко (+30 руб.)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="sugar">сахар (+10 руб.)
+            </label>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="order-button">Заказать</button>
+        </div>
+    </form>
+
+    <style>
+        .price-info {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .order-form {
+            max-width: 400px;
+        }
+        
+        .form-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .radio-label, .checkbox-label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 5px;
+        }
+        
+        .form-actions {
+            margin-top: 20px;
+        }
+        
+        .order-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .order-button:hover {
+            background-color: #45a049;
+        }
+        
+        .success-message {
+            font-size: 18px;
+            color: #2E7D32;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #E8F5E9;
+            border-radius: 5px;
+        }
+        
+        .back-link {
+            color: #1976D2;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
