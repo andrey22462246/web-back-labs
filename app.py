@@ -22,6 +22,7 @@ def main_page():
 <head>
     <meta charset="UTF-8">
     <title>НГТУ, ФБ, Лабораторные работы</title>
+    <link rel="icon" type="image/x-icon" href="/static/lab2/favicon.ico">
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -424,6 +425,7 @@ def http_codes_menu():
 <html>
 <head>
     <title>HTTP Коды ответов</title>
+    <link rel="icon" type="image/x-icon" href="/static/lab2/favicon.ico">
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .code { margin: 10px 0; padding: 10px; border-left: 4px solid #ccc; }

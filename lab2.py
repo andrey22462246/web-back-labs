@@ -53,7 +53,7 @@ def lab2_flowers(flower_id):
 <html>
 <head>
     <title>Цветок #{flower_id}</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="/static/lab2/favicon.ico">
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -89,7 +89,8 @@ def lab2_flowers(flower_id):
     
     <div class="flower-info">
         <h2>Цветок #{flower_id}</h2>
-        <p><strong>Название:</strong> {flowers_list[flower_id]}</p>
+        <p><strong>Название:</strong> {flowers_list[flower_id]['name']}</p>
+        <p><strong>Цена:</strong> {flowers_list[flower_id]['price']} руб.</p>
         <p><strong>ID:</strong> {flower_id}</p>
         <p><strong>Всего цветов в коллекции:</strong> {len(flowers_list)}</p>
     </div>
@@ -119,16 +120,16 @@ def lab2_add_flower():
                 'color': color
             }
             flowers_list.append(new_flower)
-            return render_template('add_flower.html', name=name)
+            return render_template('lab2/add_flower.html', name=name)
         except ValueError:
             return "Ошибка: цена должна быть числом", 400
     
-    return render_template('add_flower.html')
+    return render_template('lab2/add_flower.html')
 
 @lab2.route('/lab2/all_flowers')
 def lab2_all_flowers():
     """Роут для вывода всех цветов и их количества"""
-    return render_template('all_flowers.html', flowers_list=flowers_list)
+    return render_template('lab2/all_flowers.html', flowers_list=flowers_list)
 
 @lab2.route('/lab2/clear_flowers')
 def lab2_clear_flowers():
@@ -139,7 +140,7 @@ def lab2_clear_flowers():
 <html>
 <head>
     <title>Коллекция очищена</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="/static/lab2/favicon.ico">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -194,7 +195,6 @@ def lab2_clear_flowers():
 
     <div class="navigation">
         <a href="/lab2/all_flowers" class="btn">📚 Перейти к коллекции</a>
-        <a href="/lab2/add_flower/орхидея" class="btn btn-success">➕ Добавить первый цветок</a>
         <a href="/lab2" class="btn">🔙 К лабораторной 2</a>
         <a href="/" class="btn">🏠 На главную</a>
     </div>
@@ -215,7 +215,7 @@ def lab2_example():
         {'name':'Мандарины', 'price': 95},
         {'name':'Манго', 'price': 321}
     ]
-    return render_template('example.html', 
+    return render_template('lab2/example.html', 
                          name=name, 
                          number_lab=number_lab, 
                          number_course=number_course, 
@@ -224,13 +224,13 @@ def lab2_example():
 
 @lab2.route('/lab2/')
 def lab2_index():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 @lab2.route('/lab2/filters')
 def lab2_filters():
     """Страница с демонстрацией фильтров"""
     phrase = "О сколько нам открытий чудных готовит просвещенья дух"
-    return render_template('filters.html', phrase=phrase)
+    return render_template('lab2/filters.html', phrase=phrase)
 
 # Калькулятор
 @lab2.route('/lab2/calc/')
@@ -268,7 +268,7 @@ def lab2_calc(a, b):
         'Факториал b': f'{b}! = {math.factorial(b)}' if b >= 0 and b <= 20 else f'{b}! = Слишком большое число',
     }
     
-    return render_template('calc.html', 
+    return render_template('lab2/calc.html', 
                          a=a, 
                          b=b, 
                          operations=operations, 
@@ -292,118 +292,118 @@ books_list = [
 @lab2.route('/lab2/books')
 def lab2_books():
     """Страница со списком книг"""
-    return render_template('books.html', books=books_list)
-
+    return render_template('lab2/books.html', books=books_list)
+    
 # Список автомобилей
 cars_list = [
     {
         'name': 'Tesla Model S',
-        'image': 'tesla_model_s.jpg',
+        'image': 'lab2/tesla_model_s.jpg',
         'description': 'Электрический седан премиум-класса с автопилотом и ускорением 0-100 км/ч за 2.1 секунды'
     },
     {
         'name': 'BMW M5',
-        'image': 'bmw_m5.jpg', 
+        'image': 'lab2/bmw_m5.jpg', 
         'description': 'Спортивный седан с двигателем V8 мощностью 600 л.с. и полным приводом xDrive'
     },
     {
         'name': 'Mercedes-Benz S-Class',
-        'image': 'mercedes_s_class.jpg',
+        'image': 'lab2/mercedes_s_class.jpg',
         'description': 'Флагманский седан люкс-класса с технологиями автономного вождения и роскошным салоном'
     },
     {
         'name': 'Audi RS6',
-        'image': 'audi_rs6.jpg',
+        'image': 'lab2/audi_rs6.jpg',
         'description': 'Универсал с двигателем V8 би-турбо мощностью 600 л.с. и спортивной подвеской'
     },
     {
         'name': 'Porsche 911',
-        'image': 'porsche_911.jpg',
+        'image': 'lab2/porsche_911.jpg',
         'description': 'Легендарный спортивный автомобиль с задним расположением двигателя и уникальным дизайном'
     },
     {
         'name': 'Lamborghini Huracan',
-        'image': 'lamborghini_huracan.jpg',
+        'image': 'lab2/lamborghini_huracan.jpg',
         'description': 'Суперкар с двигателем V10 мощностью 640 л.с. и агрессивным дизайном'
     },
     {
         'name': 'Ferrari F8 Tributo',
-        'image': 'ferrari_f8.jpg',
+        'image': 'lab2/ferrari_f8.jpg',
         'description': 'Среднемоторный спорткар с двигателем V8 мощностью 720 л.с. и технологиями F1'
     },
     {
         'name': 'Rolls-Royce Phantom',
-        'image': 'rolls_royce_phantom.jpg',
+        'image': 'lab2/rolls_royce_phantom.jpg',
         'description': 'Ультра-люксовый седан ручной сборки с бесшумным салоном и индивидуальным интерьером'
     },
     {
         'name': 'Bentley Continental GT',
-        'image': 'bentley_continental.jpg',
+        'image': 'lab2/bentley_continental.jpg',
         'description': 'Гранд-турер с двигателем W12 и сочетанием роскоши с высокими динамическими характеристиками'
     },
     {
         'name': 'Ford Mustang',
-        'image': 'ford_mustang.jpg',
+        'image': 'lab2/ford_mustang.jpg',
         'description': 'Американский маслкар с двигателем V8 и культовым дизайном'
     },
     {
         'name': 'Chevrolet Corvette',
-        'image': 'chevrolet_corvette.jpg',
+        'image': 'lab2/chevrolet_corvette.jpg',
         'description': 'Спортивный автомобиль с переднем расположением двигателя V8 и доступной ценой'
     },
     {
         'name': 'Jeep Wrangler',
-        'image': 'jeep_wrangler.jpg',
+        'image': 'lab2/jeep_wrangler.jpg',
         'description': 'Внедорожник с подключаемым полным приводом и съемными дверями для офф-роуда'
     },
     {
         'name': 'Land Rover Defender',
-        'image': 'land_rover_defender.jpg',
+        'image': 'lab2/land_rover_defender.jpg',
         'description': 'Легендарный внедорожник с современными технологиями и выдающейся проходимостью'
     },
     {
         'name': 'Toyota Land Cruiser',
-        'image': 'toyota_land_cruiser.jpg',
+        'image': 'lab2/toyota_land_cruiser.jpg',
         'description': 'Надежный внедорожник с рамной конструкцией и репутацией неубиваемого автомобиля'
     },
     {
         'name': 'Volkswagen Golf GTI',
-        'image': 'vw_golf_gti.jpg',
+        'image': 'lab2/vw_golf_gti.jpg',
         'description': 'Хот-хэтч с богатой спортивной историей и отличной управляемостью'
     },
     {
         'name': 'Subaru WRX STI',
-        'image': 'subaru_wrx.jpg',
+        'image': 'lab2/subaru_wrx.jpg',
         'description': 'Спортивный седан с оппозитным двигателем и симметричным полным приводом'
     },
     {
         'name': 'Nissan GT-R',
-        'image': 'nissan_gtr.jpg',
+        'image': 'lab2/nissan_gtr.jpg',
         'description': 'Японский суперкар с двигателем V6 би-турбо и прозвищем "Бог"'
     },
     {
         'name': 'Mazda MX-5 Miata',
-        'image': 'mazda_mx5.jpg',
+        'image': 'lab2/mazda_mx5.jpg',
         'description': 'Компактный родстер с идеальной развесовкой и доступной ценой для настоящего драйва'
     },
     {
         'name': 'Honda Civic Type R',
-        'image': 'honda_civic_type_r.jpg',
+        'image': 'lab2/honda_civic_type_r.jpg',
         'description': 'Хот-хэтч с турбодвигателем и рекордом на Нюрбургринге среди переднеприводных автомобилей'
     },
     {
         'name': 'McLaren 720S',
-        'image': 'mclaren_720s.jpg',
+        'image': 'lab2/mclaren_720s.jpg',
         'description': 'Суперкар с карбоновым монококом и двигателем V8 мощностью 720 л.с.'
     },
     {
         'name': 'Aston Martin DB11',
-        'image': 'aston_martin_db11.jpg',
+        'image': 'lab2/aston_martin_db11.jpg',
         'description': 'Гранд-турер с элегантным британским дизайном и двигателем от Mercedes-AMG'
     },
     {
         'name': 'Lexus LC 500',
-        'image': 'lexus_lc500.jpg',
+        'image': 'lab2/lexus_lc500.jpg',
         'description': 'Купэ люкс-класса с атмосферным двигателем V8 и футуристичным дизайном'
     }
 ]
@@ -411,4 +411,4 @@ cars_list = [
 @lab2.route('/lab2/cars')
 def lab2_cars():
     """Страница со списком автомобилей"""
-    return render_template('cars.html', cars=cars_list)
+    return render_template('lab2/cars.html', cars=cars_list)
