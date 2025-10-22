@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Поиск смартфонов</h1>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <form>
+            <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                <div>
+                    <label for="min_price">Минимальная цена:</label>
+                    <input type="number" id="min_price" name="min_price" 
+                           value="{{ min_price }}" 
+                           placeholder="{{ min_price_all }}"
+                           min="0" style="width: 100%; padding: 8px;">
+                </div>
+                
+                <div>
+                    <label for="max_price">Максимальная цена:</label>
+                    <input type="number" id="max_price" name="max_price" 
+                           value="{{ max_price }}" 
+                           placeholder="{{ max_price_all }}"
+                           min="0" style="width: 100%; padding: 8px;">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Искать
+                    </button>
+                    <button type="submit" name="reset" value="1" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Сброс
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+            Диапазон цен: от {{ min_price_all }} до {{ max_price_all }} руб.
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h2>
+            {% if min_price or max_price %}
+                Найдено товаров: {{ total_found }} из {{ total_all }}
+            {% else %}
+                Все товары: {{ total_all }}
+            {% endif %}
+        </h2>
+        
+        {% if min_price or max_price %}
+            <div style="color: #666; font-size: 14px;">
+                Фильтр: 
+                {% if min_price %}от {{ min_price }} руб{% endif %}
+                {% if max_price %}{% if min_price %} до {% else %}до {% endif %}{{ max_price }} руб{% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if products %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            {% for product in products %}
+                <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; background-color: white;">
+                    <h3 style="margin-top: 0; color: #007bff;">{{ product.name }}</h3>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Бренд:</strong> {{ product.brand }}<br>
+                        <strong>Цвет:</strong> {{ product.color }}<br>
+                        <strong>Память:</strong> {{ product.storage }}
+                    </div>
+                    <div style="font-size: 18px; font-weight: bold; color: #28a745;">
+                        {{ product.price }} руб.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #666;">😔 Не найдено ни одного товара</h3>
+            <p>Попробуйте изменить параметры поиска</p>
+        </div>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="/lab3" style="color: #007bff;">← Вернуться к лабораторной работе 3</a>
+    </div>
+{% endblock %}

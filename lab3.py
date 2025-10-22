@@ -161,3 +161,111 @@ def ticket_result():
                          date=date, insurance=insurance, is_child=is_child,
                          base_price=base_price, shelf_price=shelf_price,
                          total_price=total_price)
+
+
+products = [
+    {'id': 1, 'name': 'iPhone 15 Pro', 'brand': 'Apple', 'price': 99990, 'color': 'Титановый', 'storage': '128GB'},
+    {'id': 2, 'name': 'Samsung Galaxy S24', 'brand': 'Samsung', 'price': 79990, 'color': 'Черный', 'storage': '256GB'},
+    {'id': 3, 'name': 'Xiaomi 14', 'brand': 'Xiaomi', 'price': 59990, 'color': 'Белый', 'storage': '256GB'},
+    {'id': 4, 'name': 'Google Pixel 8', 'brand': 'Google', 'price': 54990, 'color': 'Серый', 'storage': '128GB'},
+    {'id': 5, 'name': 'OnePlus 12', 'brand': 'OnePlus', 'price': 64990, 'color': 'Зеленый', 'storage': '256GB'},
+    {'id': 6, 'name': 'iPhone 14', 'brand': 'Apple', 'price': 69990, 'color': 'Синий', 'storage': '128GB'},
+    {'id': 7, 'name': 'Samsung Galaxy A54', 'brand': 'Samsung', 'price': 29990, 'color': 'Фиолетовый', 'storage': '128GB'},
+    {'id': 8, 'name': 'Xiaomi Redmi Note 13', 'brand': 'Xiaomi', 'price': 19990, 'color': 'Черный', 'storage': '128GB'},
+    {'id': 9, 'name': 'Realme 11 Pro+', 'brand': 'Realme', 'price': 24990, 'color': 'Золотой', 'storage': '256GB'},
+    {'id': 10, 'name': 'Nothing Phone 2', 'brand': 'Nothing', 'price': 44990, 'color': 'Белый', 'storage': '256GB'},
+    {'id': 11, 'name': 'iPhone 15 Pro Max', 'brand': 'Apple', 'price': 129990, 'color': 'Титановый', 'storage': '256GB'},
+    {'id': 12, 'name': 'Samsung Galaxy Z Flip5', 'brand': 'Samsung', 'price': 89990, 'color': 'Фиолетовый', 'storage': '256GB'},
+    {'id': 13, 'name': 'Google Pixel 7a', 'brand': 'Google', 'price': 34990, 'color': 'Голубой', 'storage': '128GB'},
+    {'id': 14, 'name': 'Xiaomi Poco X6 Pro', 'brand': 'Xiaomi', 'price': 27990, 'color': 'Желтый', 'storage': '256GB'},
+    {'id': 15, 'name': 'Samsung Galaxy S23 FE', 'brand': 'Samsung', 'price': 49990, 'color': 'Кремовый', 'storage': '128GB'},
+    {'id': 16, 'name': 'iPhone SE', 'brand': 'Apple', 'price': 39990, 'color': 'Красный', 'storage': '64GB'},
+    {'id': 17, 'name': 'Motorola Edge 40', 'brand': 'Motorola', 'price': 37990, 'color': 'Черный', 'storage': '256GB'},
+    {'id': 18, 'name': 'Honor 90', 'brand': 'Honor', 'price': 32990, 'color': 'Изумрудный', 'storage': '256GB'},
+    {'id': 19, 'name': 'Vivo V29', 'brand': 'Vivo', 'price': 41990, 'color': 'Красный', 'storage': '256GB'},
+    {'id': 20, 'name': 'Oppo Reno 10', 'brand': 'Oppo', 'price': 35990, 'color': 'Синий', 'storage': '256GB'},
+    {'id': 21, 'name': 'Asus ROG Phone 8', 'brand': 'Asus', 'price': 79990, 'color': 'Черный', 'storage': '256GB'},
+    {'id': 22, 'name': 'Sony Xperia 5 V', 'brand': 'Sony', 'price': 74990, 'color': 'Синий', 'storage': '128GB'},
+    {'id': 23, 'name': 'Nokia G42', 'brand': 'Nokia', 'price': 15990, 'color': 'Фиолетовый', 'storage': '128GB'},
+    {'id': 24, 'name': 'Tecno Camon 20', 'brand': 'Tecno', 'price': 12990, 'color': 'Зеленый', 'storage': '128GB'},
+    {'id': 25, 'name': 'Infinix Note 30', 'brand': 'Infinix', 'price': 14990, 'color': 'Черный', 'storage': '256GB'}
+]
+
+
+min_price_all = min(product['price'] for product in products)
+max_price_all = max(product['price'] for product in products)
+
+@lab3.route('/lab3/products')
+def products_search():
+    
+    min_price_cookie = request.cookies.get('min_price')
+    max_price_cookie = request.cookies.get('max_price')
+    
+    
+    min_price_form = request.args.get('min_price')
+    max_price_form = request.args.get('max_price')
+    reset = request.args.get('reset')
+    
+    
+    if reset:
+        resp = make_response(redirect('/lab3/products'))
+        resp.set_cookie('min_price', '', expires=0)
+        resp.set_cookie('max_price', '', expires=0)
+        return resp
+    
+    
+    if min_price_form is not None or max_price_form is not None:
+        
+        min_price = min_price_form
+        max_price = max_price_form
+        
+        
+        resp = make_response(redirect('/lab3/products'))
+        if min_price_form:
+            resp.set_cookie('min_price', min_price_form)
+        if max_price_form:
+            resp.set_cookie('max_price', max_price_form)
+        return resp
+    else:
+        
+        min_price = min_price_cookie
+        max_price = max_price_cookie
+    
+    
+    filtered_products = products.copy()
+    
+    if min_price:
+        try:
+            min_val = int(min_price)
+            filtered_products = [p for p in filtered_products if p['price'] >= min_val]
+        except ValueError:
+            pass
+    
+    if max_price:
+        try:
+            max_val = int(max_price)
+            filtered_products = [p for p in filtered_products if p['price'] <= max_val]
+        except ValueError:
+            pass
+    
+    
+    if min_price and max_price:
+        try:
+            if int(min_price) > int(max_price):
+                min_price, max_price = max_price, min_price
+                
+                resp = make_response(redirect('/lab3/products'))
+                resp.set_cookie('min_price', min_price)
+                resp.set_cookie('max_price', max_price)
+                return resp
+        except ValueError:
+            pass
+    
+    return render_template('lab3/products.html',
+                         products=filtered_products,
+                         min_price=min_price or '',
+                         max_price=max_price or '',
+                         min_price_all=min_price_all,
+                         max_price_all=max_price_all,
+                         total_found=len(filtered_products),
+                         total_all=len(products))
