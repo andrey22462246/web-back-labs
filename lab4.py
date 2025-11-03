@@ -192,3 +192,72 @@ def fridge():
 @lab4.route('/lab4/fridge')
 def fridge_form():
     return render_template('lab4/fridge-form.html')
+
+@lab4.route('/lab4/grain-order', methods=['GET', 'POST'])
+def grain_order():
+    if request.method == 'GET':
+        return render_template('lab4/grain-order.html')
+    
+    grain_type = request.form.get('grain_type')
+    weight_str = request.form.get('weight')
+    
+    prices = {
+        'barley': 12000,
+        'oats': 8500,
+        'wheat': 9000,
+        'rye': 15000
+    }
+    
+    grain_names = {
+        'barley': 'ячмень',
+        'oats': 'овёс',
+        'wheat': 'пшеница',
+        'rye': 'рожь'
+    }
+    
+    if not weight_str:
+        return render_template('lab4/grain-order.html', 
+                             error='Ошибка: не указан вес',
+                             grain_type=grain_type)
+    
+    try:
+        weight = float(weight_str)
+    except ValueError:
+        return render_template('lab4/grain-order.html', 
+                             error='Ошибка: введите корректное число для веса',
+                             grain_type=grain_type)
+    
+    if weight <= 0:
+        return render_template('lab4/grain-order.html', 
+                             error='Ошибка: вес должен быть больше 0',
+                             grain_type=grain_type)
+    
+    if weight > 100:
+        return render_template('lab4/grain-order.html', 
+                             error='Ошибка: такого объёма сейчас нет в наличии',
+                             grain_type=grain_type,
+                             weight=weight)
+    
+    price_per_ton = prices[grain_type]
+    total = weight * price_per_ton
+    
+    discount_applied = False
+    discount_amount = 0
+    
+    if weight > 10:
+        discount_amount = total * 0.1
+        total -= discount_amount
+        discount_applied = True
+    
+    grain_name = grain_names[grain_type]
+    
+    return render_template('lab4/grain-order.html', 
+                         success=f'Заказ успешно сформирован. Вы заказали {grain_name}. Вес: {weight} т. Сумма к оплате: {total:.0f} руб',
+                         discount_applied=discount_applied,
+                         discount_amount=discount_amount,
+                         grain_type=grain_type,
+                         weight=weight)
+
+@lab4.route('/lab4/grain-order')
+def grain_order_form():
+    return render_template('lab4/grain-order.html')
