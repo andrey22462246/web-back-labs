@@ -125,7 +125,7 @@ def login():
     password = request.form.get('password')
 
     for user in users:  
-        if login == ['login'] and password == ['password']:
+        if login == user['login'] and password == user['password']:
             return render_template('/lab4/login.html', login=login, authorized=True)
 
     error = 'Неверные логин и/или пароль'
