@@ -314,38 +314,38 @@ def edit_user():
         return redirect('/lab4/login')
     
     if request.method == 'GET':
-        # Находим текущего пользователя
+        
         for user in users:
             if user['login'] == session['login']:
                 return render_template('lab4/edit-user.html', user=user)
         return redirect('/lab4/login')
     
-    # POST запрос - сохранение изменений
+    
     login = request.form.get('login')
     name = request.form.get('name')
     gender = request.form.get('gender')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm_password')
     
-    # Проверка обязательных полей
+    
     if not login or not name:
         return render_template('lab4/edit-user.html', 
                              user={'login': login, 'name': name, 'gender': gender},
                              error='Логин и имя обязательны для заполнения')
     
-    # Проверка паролей
+    
     if password and password != confirm_password:
         return render_template('lab4/edit-user.html', 
                              user={'login': login, 'name': name, 'gender': gender},
                              error='Пароли не совпадают')
     
-    # Обновление данных пользователя
+    
     for user in users:
         if user['login'] == session['login']:
             user['login'] = login
             user['name'] = name
             user['gender'] = gender
-            if password:  # Меняем пароль только если указан новый
+            if password:  
                 user['password'] = password
             session['login'] = login
             session['name'] = name
