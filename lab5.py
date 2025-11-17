@@ -126,11 +126,13 @@ def create():
     title = request.form.get('title')
     article_text = request.form.get('article_text')
 
+    # ЖЕСТКАЯ ПРОВЕРКА ДАННЫХ
     if not title or not article_text:
         return render_template('lab5/create_article.html', error="Заполните все поля")
 
     conn, cur = db_connect()
 
+    # ПРОВЕРЯЕМ ЧТО ПОЛЬЗОВАТЕЛЬ СУЩЕСТВУЕТ
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     else:
@@ -144,19 +146,24 @@ def create():
     
     login_id = user["id"]
 
+    # ПРИНУДИТЕЛЬНЫЙ INSERT БЕЗ ВСЯКИХ УСЛОВИЙ
     try:
-        if current_app.config['DB_TYPE'] == 'postgres':
-            cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
-                       (login_id, title, article_text))
-        else:
-            cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
-                       (login_id, title, article_text))
+        # ВСЕГДА ИСПОЛЬЗУЕМ SQLite НА PYTHONANYWHERE
+        cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?)", 
+                   (login_id, title, article_text))
+        
+        # ПРОВЕРЯЕМ ЧТО ЗАПИСЬ ДОБАВИЛАСЬ
+        cur.execute("SELECT COUNT(*) FROM articles")
+        count_after = cur.fetchone()[0]
         
         conn.commit()
         
+        print(f"PYTHONANYWHERE_DEBUG: Статья добавлена! Всего статей: {count_after}")
+        
     except Exception as e:
+        print(f"PYTHONANYWHERE_DEBUG: ОШИБКА: {e}")
         conn.rollback()
-        return render_template('lab5/create_article.html', error=f"Ошибка сохранения: {e}")
+        return render_template('lab5/create_article.html', error=f"Ошибка: {e}")
 
     db_close(conn, cur)
     return redirect('/lab5')
