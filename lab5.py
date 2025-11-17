@@ -109,11 +109,8 @@ def create():
 
     conn, cur = db_connect()
 
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
-    else:
-        cur.execute("SELECT id FROM users WHERE login=?;", (login,))
-    
+    # ПРОВЕРЯЕМ ЧТО ПОЛЬЗОВАТЕЛЬ ЕСТЬ
+    cur.execute("SELECT id FROM users WHERE login=?", (login,))
     user = cur.fetchone()
     
     if not user:
@@ -122,19 +119,22 @@ def create():
     
     login_id = user["id"]
 
+    # ПРИНУДИТЕЛЬНЫЙ INSERT
     try:
-        if current_app.config['DB_TYPE'] == 'postgres':
-            cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
-                       (login_id, title, article_text))
-        else:
-            cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
-                       (login_id, title, article_text))
+        cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (?, ?, ?)", 
+                   (login_id, title, article_text))
+        
+        # ПРОВЕРЯЕМ СРАЗУ
+        cur.execute("SELECT COUNT(*) FROM articles")
+        new_count = cur.fetchone()[0]
+        print(f"DEBUG: После INSERT статей стало: {new_count}")
         
         conn.commit()
         
     except Exception as e:
+        print(f"DEBUG: Ошибка: {e}")
         conn.rollback()
-        return render_template('lab5/create_article.html', error=f"Ошибка сохранения: {e}")
+        return render_template('lab5/create_article.html', error=f"Ошибка: {e}")
 
     db_close(conn, cur)
     return redirect('/lab5')
