@@ -30,7 +30,6 @@ def db_connect():
         conn.row_factory = sqlite3.Row
         cur = conn.cursor() 
 
-    # СОЗДАЕМ ТАБЛИЦЫ ЕСЛИ ИХ НЕТ
         cur.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,39 +125,14 @@ def create():
     title = request.form.get('title')
     article_text = request.form.get('article_text')
 
-    if not title or not article_text:
-        return render_template('lab5/create_article.html', error="Заполните все поля")
-
     conn, cur = db_connect()
 
-    
-    cur.execute("SELECT id FROM users WHERE login=?", (login,))
-    user = cur.fetchone()
-    
-    if not user:
-        db_close(conn, cur)
-        return render_template('lab5/create_article.html', error="Пользователь не найден")
-    
-    login_id = user["id"]
+    cur.execute("SELECT id FROM users WHERE login = %s", (login, ))
+    login_id = cur.fetchone()["id"]
 
-    
-    try:
-        
-        cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (?, ?, ?)", 
-                   (login_id, title, article_text))
-        
-        
-        conn.commit()
-        
-        
-        cur.execute("SELECT * FROM articles WHERE login_id=?", (login_id,))
-        articles = cur.fetchall()
-        print(f"PYTHONANYWHERE_DEBUG: После добавления статей: {len(articles)}")
-        
-    except Exception as e:
-        print(f"PYTHONANYWHERE_DEBUG: ОШИБКА: {e}")
-        conn.rollback()
-        return render_template('lab5/create_article.html', error=f"Ошибка: {e}")
+    cur.execute("INSERT INTO articles(user_id, title, article_text) \
+        VALUES (%s, %s, %s);", (login_id, title, article_text)
+        )
 
     db_close(conn, cur)
     return redirect('/lab5')
