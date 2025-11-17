@@ -237,3 +237,15 @@ def test_create():
     
     db_close(conn, cur)
     return f"Статья создана! Всего статей: {count}"
+
+@lab5.route('/lab5/debug_users')
+def debug_users():
+    conn, cur = db_connect()
+    cur.execute("SELECT * FROM users")
+    users = cur.fetchall()
+    db_close(conn, cur)
+    
+    result = "Пользователи в базе:<br>"
+    for user in users:
+        result += f"ID: {user['id']}, Login: {user['login']}<br>"
+    return result
