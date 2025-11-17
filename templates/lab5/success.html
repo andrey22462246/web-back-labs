@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <div style="text-align: center; margin-top: 50px;">
+        <h1 style="color: green;">🎉 Поздравляем! 🎉</h1>
+        
+        <div style="font-size: 18px; margin: 20px 0;">
+            <p>Вы успешно зарегистрировались в системе!</p>
+            <p>Ваш логин: <strong>{{ username }}</strong></p>
+        </div>
+
+        <div style="margin: 30px 0;">
+            <p>Теперь вы можете пользоваться всеми возможностями нашей базы знаний:</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>📝 Создавать статьи</li>
+                <li>📚 Просматривать публичные статьи</li>
+                <li>⭐ Добавлять статьи в избранное</li>
+                <li>❤️ Ставить лайки</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="/lab5" style="display: inline-block; padding: 12px 24px; 
+                                  background-color: #4CAF50; color: white; 
+                                  text-decoration: none; border-radius: 5px;
+                                  font-size: 16px; font-weight: bold;">
+                Перейти к использованию базы знаний
+            </a>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <p>Или вы можете:</p>
+            <a href="/lab5/create" style="color: #2196F3; text-decoration: none;">
+                📝 Создать свою первую статью
+            </a>
+        </div>
+    </div>
+{% endblock %}
