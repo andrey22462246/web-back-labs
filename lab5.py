@@ -172,3 +172,15 @@ def login():
     session['username'] = login
     db_close(conn, cur)
     return render_template('lab5/success_login.html', login=login, username=login)
+
+    @lab5.route('/lab5/debug')
+    def debug():
+        conn, cur = db_connect()
+        cur.execute("SELECT COUNT(*) FROM articles")
+        count = cur.fetchone()[0]
+        db_close(conn, cur)
+        return f"Статей в базе: {count}"
+
+    @lab5.route('/lab5/debug_config')
+    def debug_config():
+        return f"DB_TYPE: {current_app.config['DB_TYPE']}"
