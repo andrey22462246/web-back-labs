@@ -204,3 +204,36 @@ def test_insert():
     
     db_close(conn, cur)
     return f"После прямого INSERT статей: {count}"
+
+@lab5.route('/lab5/debug_session')
+def debug_session():
+    return f"Логин в сессии: {session.get('login')}"
+
+@lab5.route('/lab5/test_create')
+def test_create():
+    # Тест создания статьи с жесткими данными
+    login = session.get('login')
+    if not login:
+        return "Не залогинен"
+    
+    conn, cur = db_connect()
+    
+    # Берем ID пользователя
+    cur.execute("SELECT id FROM users WHERE login=?", (login,))
+    user = cur.fetchone()
+    
+    if not user:
+        return "Пользователь не найден"
+    
+    login_id = user["id"]
+    
+    # Создаем статью
+    cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (?, ?, ?)", 
+               (login_id, "Тестовая статья", "Текст тестовой статьи"))
+    conn.commit()
+    
+    cur.execute("SELECT COUNT(*) FROM articles")
+    count = cur.fetchone()[0]
+    
+    db_close(conn, cur)
+    return f"Статья создана! Всего статей: {count}"
