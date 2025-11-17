@@ -117,7 +117,13 @@ def create():
         db_close(conn, cur)
         return render_template('lab5/create_article.html', error="Пользователь не найден")
     
-    login_id = user["id"]  
+    login_id = user["id"]
+    
+    if not login_id:
+        db_close(conn, cur)
+        return render_template('lab5/create_article.html', error="Ошибка: ID пользователя не найден")
+    
+    print(f"DEBUG: Inserting article with login_id={login_id}") 
 
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
