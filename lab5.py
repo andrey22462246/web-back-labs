@@ -190,3 +190,17 @@ def debug():
 @lab5.route('/lab5/debug_config')
 def debug_config():
     return f"DB_TYPE: {current_app.config['DB_TYPE']}"
+
+@lab5.route('/lab5/test_insert')
+def test_insert():
+    conn, cur = db_connect()
+    
+    # ПРЯМОЙ INSERT БЕЗ ФОРМЫ
+    cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (1, 'Test', 'Test')")
+    conn.commit()
+    
+    cur.execute("SELECT COUNT(*) FROM articles")
+    count = cur.fetchone()[0]
+    
+    db_close(conn, cur)
+    return f"После прямого INSERT статей: {count}"
