@@ -30,6 +30,28 @@ def db_connect():
         conn.row_factory = sqlite3.Row
         cur = conn.cursor() 
 
+    # СОЗДАЕМ ТАБЛИЦЫ ЕСЛИ ИХ НЕТ
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                login VARCHAR(30) UNIQUE NOT NULL,
+                password VARCHAR(162) NOT NULL
+            )
+        ''')
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS articles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                login_id INTEGER NOT NULL,
+                title VARCHAR(255),
+                article_text TEXT,
+                is_favorite BOOLEAN,
+                is_public BOOLEAN,
+                likes INTEGER DEFAULT 0,
+                FOREIGN KEY (login_id) REFERENCES users(id)
+            )
+        ''')
+        conn.commit()
+
     return conn, cur
 
 def db_close(conn, cur):
@@ -104,13 +126,11 @@ def create():
     title = request.form.get('title')
     article_text = request.form.get('article_text')
 
-    # Проверяем что поля не пустые
     if not title or not article_text:
         return render_template('lab5/create_article.html', error="Заполните все поля")
 
     conn, cur = db_connect()
 
-    # Ищем пользователя
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     else:
@@ -124,7 +144,6 @@ def create():
     
     login_id = user["id"]
 
-    # Вставляем статью
     try:
         if current_app.config['DB_TYPE'] == 'postgres':
             cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
@@ -133,11 +152,9 @@ def create():
             cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
                        (login_id, title, article_text))
         
-        conn.commit()  # Явное сохранение
-        print(f"DEBUG: Article inserted successfully")  # Отладка
+        conn.commit()
         
     except Exception as e:
-        print(f"DEBUG: Error inserting article: {e}")  # Отладка ошибки
         conn.rollback()
         return render_template('lab5/create_article.html', error=f"Ошибка сохранения: {e}")
 
