@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}База знаний{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lab5/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='lab2/favicon.ico') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='lab2/site.webmanifest') }}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="{{ url_for('lab5.main') }}" class="nav-logo">База знаний</a>
+                <div class="nav-menu">
+                    {% if login %}
+                    <span class="nav-user">Привет, {{ username }}!</span>
+                    <a href="{{ url_for('lab5.list_articles') }}" class="nav-link">Мои статьи</a>
+                    <a href="{{ url_for('lab5.create') }}" class="nav-link">Новая статья</a>
+                    <a href="{{ url_for('lab5.logout') }}" class="nav-link logout">Выйти</a>
+                    {% else %}
+                    <a href="{{ url_for('lab5.login') }}" class="nav-link">Войти</a>
+                    <a href="{{ url_for('lab5.register') }}" class="nav-link">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block lab %}
+        <h1>Лабораторная работа 5</h1>
+        {% endblock %}
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 База знаний. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, current_app
+from flask import Blueprint, render_template, request, session, redirect, current_app, url_for
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -12,7 +12,7 @@ lab5 = Blueprint('lab5',__name__)
 @lab5.route('/lab5/')
 def main():
     username = session.get('login')
-    return render_template('lab5/lab5.html', login = session.get('login'), username=username)
+    return render_template('lab5/lab5.html', login=session.get('login'), username=username)
 
 def db_connect():
     if current_app.config['DB_TYPE'] == 'postgres':
@@ -37,7 +37,7 @@ def db_close(conn, cur):
     cur.close()
     conn.close()
 
-@lab5.route('/lab5/register', methods = ['GET', 'POST'])
+@lab5.route('/lab5/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('lab5/register.html')
@@ -68,9 +68,9 @@ def register():
 
     db_close(conn, cur)
     return render_template('lab5/success.html', login=login, username=login)
-            
+
 @lab5.route('/lab5/list')
-def list():
+def list_articles():
     login = session.get('login')
     if not login:
         return redirect('/lab5/login')
@@ -81,63 +81,180 @@ def list():
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     else:
         cur.execute("SELECT id FROM users WHERE login=?;", (login,))
-    login_id = cur.fetchone()["id"]
+    user = cur.fetchone()
+    
+    if not user:
+        db_close(conn, cur)
+        return redirect('/lab5/login')
+    
+    login_id = user["id"]
 
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM articles WHERE user_id=%s;", (login_id,))
+        cur.execute("SELECT * FROM articles WHERE user_id=%s ORDER BY id DESC;", (login_id,))
     else:
-        cur.execute("SELECT * FROM articles WHERE login_id=?;", (login_id,))
+        cur.execute("SELECT * FROM articles WHERE login_id=? ORDER BY id DESC;", (login_id,))
     articles = cur.fetchall()
 
     db_close(conn, cur)
-    return render_template('/lab5/articles.html', articles=articles)
+    return render_template('/lab5/articles.html', articles=articles, username=login)
 
-@lab5.route('/lab5/create', methods = ['GET', 'POST'])
+@lab5.route('/lab5/create', methods=['GET', 'POST'])
 def create():
     login = session.get('login')
     if not login:
         return redirect('/lab5/login')
 
     if request.method == 'GET':
-        return render_template('lab5/create_article.html')
+        return render_template('lab5/create_article.html', username=login)
     
     title = request.form.get('title')
     article_text = request.form.get('article_text')
 
+    # Валидация
     if not title or not article_text:
-        return render_template('lab5/create_article.html', error="Заполните все поля")
+        return render_template('lab5/create_article.html', 
+                             error="Заполните все поля", 
+                             username=login)
 
     conn, cur = db_connect()
 
-    # ПРОВЕРЯЕМ ЧТО ПОЛЬЗОВАТЕЛЬ ЕСТЬ
-    cur.execute("SELECT id FROM users WHERE login=?", (login,))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    
     user = cur.fetchone()
     
     if not user:
         db_close(conn, cur)
-        return render_template('lab5/create_article.html', error="Пользователь не найден")
+        return render_template('lab5/create_article.html', 
+                             error="Пользователь не найден", 
+                             username=login)
     
     login_id = user["id"]
 
-    # ПРИНУДИТЕЛЬНЫЙ INSERT
     try:
-        cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (?, ?, ?)", 
-                   (login_id, title, article_text))
-        
-        # ПРОВЕРЯЕМ СРАЗУ
-        cur.execute("SELECT COUNT(*) FROM articles")
-        new_count = cur.fetchone()[0]
-        print(f"DEBUG: После INSERT статей стало: {new_count}")
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
+                       (login_id, title, article_text))
+        else:
+            cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
+                       (login_id, title, article_text))
         
         conn.commit()
         
     except Exception as e:
-        print(f"DEBUG: Ошибка: {e}")
         conn.rollback()
-        return render_template('lab5/create_article.html', error=f"Ошибка: {e}")
+        return render_template('lab5/create_article.html', 
+                             error=f"Ошибка сохранения: {e}", 
+                             username=login)
 
     db_close(conn, cur)
-    return redirect('/lab5')
+    return redirect('/lab5/list')
+
+@lab5.route('/lab5/edit/<int:article_id>', methods=['GET', 'POST'])
+def edit_article(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    # Проверяем принадлежность статьи пользователю
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    user = cur.fetchone()
+    
+    if not user:
+        db_close(conn, cur)
+        return redirect('/lab5/login')
+    
+    login_id = user["id"]
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM articles WHERE id=%s AND user_id=%s;", (article_id, login_id))
+    else:
+        cur.execute("SELECT * FROM articles WHERE id=? AND login_id=?;", (article_id, login_id))
+    article = cur.fetchone()
+
+    if not article:
+        db_close(conn, cur)
+        return redirect('/lab5/list')
+
+    if request.method == 'GET':
+        db_close(conn, cur)
+        return render_template('lab5/edit_article.html', 
+                             article=article, 
+                             username=login)
+
+    # Обработка формы редактирования
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+
+    # Валидация
+    if not title or not article_text:
+        db_close(conn, cur)
+        return render_template('lab5/edit_article.html', 
+                             article=article,
+                             error="Заполните все поля", 
+                             username=login)
+
+    try:
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("UPDATE articles SET title=%s, article_text=%s WHERE id=%s AND user_id=%s;", 
+                       (title, article_text, article_id, login_id))
+        else:
+            cur.execute("UPDATE articles SET title=?, article_text=? WHERE id=? AND login_id=?;", 
+                       (title, article_text, article_id, login_id))
+        
+        conn.commit()
+        
+    except Exception as e:
+        conn.rollback()
+        return render_template('lab5/edit_article.html', 
+                             article=article,
+                             error=f"Ошибка сохранения: {e}", 
+                             username=login)
+
+    db_close(conn, cur)
+    return redirect('/lab5/list')
+
+@lab5.route('/lab5/delete/<int:article_id>')
+def delete_article(article_id):
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    conn, cur = db_connect()
+
+    # Проверяем принадлежность статьи пользователю
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    user = cur.fetchone()
+    
+    if not user:
+        db_close(conn, cur)
+        return redirect('/lab5/login')
+    
+    login_id = user["id"]
+
+    try:
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("DELETE FROM articles WHERE id=%s AND user_id=%s;", (article_id, login_id))
+        else:
+            cur.execute("DELETE FROM articles WHERE id=? AND login_id=?;", (article_id, login_id))
+        
+        conn.commit()
+        
+    except Exception as e:
+        conn.rollback()
+
+    db_close(conn, cur)
+    return redirect('/lab5/list')
 
 @lab5.route('/lab5/login', methods=['GET', 'POST'])
 def login():
@@ -171,81 +288,9 @@ def login():
     session['login'] = login
     session['username'] = login
     db_close(conn, cur)
-    return render_template('lab5/success_login.html', login=login, username=login)
+    return redirect('/lab5')
 
-@lab5.route('/lab5/debug')
-def debug():
-    conn, cur = db_connect()
-    
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT COUNT(*) FROM articles")
-        count = cur.fetchone()['count']
-    else:
-        cur.execute("SELECT COUNT(*) FROM articles")
-        count = cur.fetchone()[0]
-        
-    db_close(conn, cur)
-    return f"Статей в базе: {count}"
-
-@lab5.route('/lab5/debug_config')
-def debug_config():
-    return f"DB_TYPE: {current_app.config['DB_TYPE']}"
-
-@lab5.route('/lab5/test_insert')
-def test_insert():
-    conn, cur = db_connect()
-    
-    # ПРЯМОЙ INSERT БЕЗ ФОРМЫ
-    cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (1, 'Test', 'Test')")
-    conn.commit()
-    
-    cur.execute("SELECT COUNT(*) FROM articles")
-    count = cur.fetchone()[0]
-    
-    db_close(conn, cur)
-    return f"После прямого INSERT статей: {count}"
-
-@lab5.route('/lab5/debug_session')
-def debug_session():
-    return f"Логин в сессии: {session.get('login')}"
-
-@lab5.route('/lab5/test_create')
-def test_create():
-    # Тест создания статьи с жесткими данными
-    login = session.get('login')
-    if not login:
-        return "Не залогинен"
-    
-    conn, cur = db_connect()
-    
-    # Берем ID пользователя
-    cur.execute("SELECT id FROM users WHERE login=?", (login,))
-    user = cur.fetchone()
-    
-    if not user:
-        return "Пользователь не найден"
-    
-    login_id = user["id"]
-    
-    # Создаем статью
-    cur.execute("INSERT INTO articles (login_id, title, article_text) VALUES (?, ?, ?)", 
-               (login_id, "Тестовая статья", "Текст тестовой статьи"))
-    conn.commit()
-    
-    cur.execute("SELECT COUNT(*) FROM articles")
-    count = cur.fetchone()[0]
-    
-    db_close(conn, cur)
-    return f"Статья создана! Всего статей: {count}"
-
-@lab5.route('/lab5/debug_users')
-def debug_users():
-    conn, cur = db_connect()
-    cur.execute("SELECT * FROM users")
-    users = cur.fetchall()
-    db_close(conn, cur)
-    
-    result = "Пользователи в базе:<br>"
-    for user in users:
-        result += f"ID: {user['id']}, Login: {user['login']}<br>"
-    return result
+@lab5.route('/lab5/logout')
+def logout():
+    session.clear()
+    return redirect('/lab5')

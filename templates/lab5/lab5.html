@@ -1,20 +1,61 @@
-{% extends "base.html" %}
+{% extends "lab5/base.html" %}
 
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-    <h1>Flask и БД</h1>
-    <div>
-        Тема лабораторной - Flask и БД
+<div class="welcome-container">
+    <h1>Добро пожаловать в Базу знаний!</h1>
+    
+    {% if login %}
+    <div class="user-welcome">
+        <p>Приветствуем, <strong>{{ username }}</strong>!</p>
+        <div class="welcome-actions">
+            <a href="{{ url_for('lab5.list_articles') }}" class="btn btn-primary">Мои статьи</a>
+            <a href="{{ url_for('lab5.create') }}" class="btn btn-secondary">Создать статью</a>
+            <a href="{{ url_for('lab5.logout') }}" class="btn btn-logout">Выйти</a>
+        </div>
     </div>
-    <div style="margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
-        Пользователь: <strong>{{ username if username else 'Anonymous' }}</strong>
+    {% else %}
+    <div class="guest-welcome">
+        <p>Для работы с базой знаний необходимо войти в систему</p>
+        <div class="welcome-actions">
+            <a href="{{ url_for('lab5.login') }}" class="btn btn-primary">Войти</a>
+            <a href="{{ url_for('lab5.register') }}" class="btn btn-secondary">Зарегистрироваться</a>
+        </div>
     </div>
-    <div>Список сделанных страниц:</div>
-    <ol>
-        <li><a href="/lab5/list">Список статей</a></li>
-        <li><a href="/lab5/create">Создать статью</a></li>
-        <li><a href="/lab5/register">Регистрация</a></li>
-        <li><a href="/lab5/login">Войти</a></li>
-    </ol>
+    {% endif %}
+</div>
+
+<style>
+.welcome-container {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.user-welcome, .guest-welcome {
+    margin-top: 2rem;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-logout {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}
+</style>
 {% endblock %}

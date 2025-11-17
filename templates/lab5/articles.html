@@ -1,10 +1,41 @@
-{% extends "base.html" %}
+{% extends "lab5/base.html" %}
+
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-<h1>Статьи</h1>
-{% for article in articles %}
-    <h2>{{ article['title'] }}</h2>
-    <blockquote>{{ article['article_text'] }}</blockquote>
-{% endfor %}
+<div class="articles-header">
+    <h1>Мои статьи</h1>
+    <a href="{{ url_for('lab5.create') }}" class="btn btn-primary">Новая статья</a>
+</div>
+
+{% if articles %}
+    <div class="articles-list">
+        {% for article in articles %}
+        <div class="article-card">
+            <div class="article-header">
+                <h2 class="article-title">{{ article.title }}</h2>
+                <div class="article-actions">
+                    <a href="{{ url_for('lab5.edit_article', article_id=article.id) }}" class="btn btn-edit">Редактировать</a>
+                    <a href="{{ url_for('lab5.delete_article', article_id=article.id) }}" class="btn btn-delete" onclick="return confirm('Удалить эту статью?')">Удалить</a>
+                </div>
+            </div>
+            <div class="article-content">
+                <p>{{ article.article_text }}</p>
+            </div>
+            <div class="article-footer">
+                <span class="article-date">Создано: {{ article.ts_public if article.ts_public else 'Недавно' }}</span>
+                {% if article.likes %}
+                <span class="article-likes">❤️ {{ article.likes }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-articles">
+        <h2>У вас пока нет статей</h2>
+        <p>Создайте свою первую статью!</p>
+        <a href="{{ url_for('lab5.create') }}" class="btn btn-primary">Создать статью</a>
+    </div>
+{% endif %}
 {% endblock %}

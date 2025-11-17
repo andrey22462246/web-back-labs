@@ -1,40 +1,42 @@
-{% extends "base.html" %}
+{% extends "lab5/base.html" %}
 
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-    <div style="text-align: center; margin-top: 50px;">
-        <h1 style="color: green;">🎉 Успешный вход! 🎉</h1>
-        
-        <div style="font-size: 18px; margin: 20px 0;">
-            <p>Вы успешно вошли в систему!</p>
-            <p>Добро пожаловать, <strong>{{ username }}</strong>!</p>
-        </div>
-
-        <div style="margin: 30px 0;">
-            <p>Теперь вы можете пользоваться всеми возможностями нашей базы знаний:</p>
-            <ul style="list-style: none; padding: 0;">
-                <li>📝 Создавать статьи</li>
-                <li>📚 Просматривать публичные статьи</li>
-                <li>⭐ Добавлять статьи в избранное</li>
-                <li>❤️ Ставить лайки</li>
-            </ul>
-        </div>
-
-        <div style="margin-top: 30px;">
-            <a href="/lab5" style="display: inline-block; padding: 12px 24px; 
-                                  background-color: #4CAF50; color: white; 
-                                  text-decoration: none; border-radius: 5px;
-                                  font-size: 16px; font-weight: bold;">
-                Перейти к главной странице
-            </a>
-        </div>
-
-        <div style="margin-top: 20px;">
-            <p>Или вы можете:</p>
-            <a href="/lab5/create" style="color: #2196F3; text-decoration: none;">
-                📝 Создать новую статью
-            </a>
-        </div>
+<div class="success-container">
+    <div class="success-icon">👋</div>
+    <h1>Вход выполнен!</h1>
+    <p>С возвращением, <strong>{{ username }}</strong>!</p>
+    <p>Теперь вы можете работать со своими статьями.</p>
+    <div class="success-actions">
+        <a href="{{ url_for('lab5.main') }}" class="btn btn-primary">На главную</a>
+        <a href="{{ url_for('lab5.list_articles') }}" class="btn btn-secondary">Мои статьи</a>
+        <a href="{{ url_for('lab5.create') }}" class="btn btn-outline">Создать статью</a>
     </div>
+</div>
+
+<style>
+.success-container {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.success-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+</style>
 {% endblock %}
