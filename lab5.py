@@ -110,7 +110,14 @@ def create():
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     else:
         cur.execute("SELECT id FROM users WHERE login=?;", (login,))
-    login_id = cur.fetchone()["id"]
+    
+    user = cur.fetchone()
+    
+    if not user:
+        db_close(conn, cur)
+        return render_template('lab5/create_article.html', error="Пользователь не найден")
+    
+    login_id = user["id"]  
 
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
