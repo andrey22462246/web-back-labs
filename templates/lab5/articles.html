@@ -11,22 +11,43 @@
 {% if articles %}
     <div class="articles-list">
         {% for article in articles %}
-        <div class="article-card">
+        <div class="article-card {% if article.is_favorite %}favorite{% endif %}">
             <div class="article-header">
                 <h2 class="article-title">{{ article.title }}</h2>
-                <div class="article-actions">
-                    <a href="{{ url_for('lab5.edit_article', article_id=article.id) }}" class="btn btn-edit">Редактировать</a>
-                    <a href="{{ url_for('lab5.delete_article', article_id=article.id) }}" class="btn btn-delete" onclick="return confirm('Удалить эту статью?')">Удалить</a>
+                <div class="article-controls">
+                    <a href="{{ url_for('lab5.toggle_favorite', article_id=article.id) }}" 
+                       class="btn btn-sm {% if article.is_favorite %}btn-warning{% else %}btn-outline{% endif %}">
+                        {% if article.is_favorite %}★{% else %}☆{% endif %}
+                    </a>
+                    <a href="{{ url_for('lab5.toggle_public', article_id=article.id) }}" 
+                       class="btn btn-sm {% if article.is_public %}btn-success{% else %}btn-outline{% endif %}">
+                        {% if article.is_public %}🌍{% else %}🔒{% endif %}
+                    </a>
+                    <a href="{{ url_for('lab5.edit_article', article_id=article.id) }}" class="btn btn-sm btn-edit">✏️</a>
+                    <a href="{{ url_for('lab5.delete_article', article_id=article.id) }}" class="btn btn-sm btn-delete" onclick="return confirm('Удалить эту статью?')">🗑️</a>
                 </div>
             </div>
             <div class="article-content">
                 <p>{{ article.article_text }}</p>
             </div>
             <div class="article-footer">
-                <span class="article-date">Создано: {{ article.ts_public if article.ts_public else 'Недавно' }}</span>
-                {% if article.likes %}
-                <span class="article-likes">❤️ {{ article.likes }}</span>
-                {% endif %}
+                <div class="article-status">
+                    {% if article.is_favorite %}
+                    <span class="favorite-badge">⭐ Избранное</span>
+                    {% endif %}
+                    {% if article.is_public %}
+                    <span class="public-badge">🌍 Публичная</span>
+                    {% else %}
+                    <span class="private-badge">🔒 Приватная</span>
+                    {% endif %}
+                </div>
+                <span class="article-date">
+                    {% if article.ts_public %}
+                        Создано: {{ article.ts_public }}
+                    {% else %}
+                        Создано: Недавно
+                    {% endif %}
+                </span>
             </div>
         </div>
         {% endfor %}

@@ -107,6 +107,10 @@ h1 {
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
+.article-card.favorite {
+    border-left: 4px solid #ffd700;
+}
+
 .article-header {
     display: flex;
     justify-content: space-between;
@@ -121,7 +125,7 @@ h1 {
     flex: 1;
 }
 
-.article-actions {
+.article-controls {
     display: flex;
     gap: 0.5rem;
     margin-left: 1rem;
@@ -143,9 +147,41 @@ h1 {
     padding-top: 0.5rem;
 }
 
-.article-likes {
-    color: #e74c3c;
+.article-status {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.favorite-badge {
+    background: #ffd700;
+    color: #333;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
     font-weight: bold;
+}
+
+.public-badge {
+    background: #28a745;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.private-badge {
+    background: #6c757d;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.article-author {
+    font-weight: 600;
+    color: #667eea;
 }
 
 /* Сообщение об отсутствии статей */
@@ -177,7 +213,7 @@ h1 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.article-form {
+.article-form, .auth-form, .profile-form {
     margin-top: 1.5rem;
 }
 
@@ -213,11 +249,37 @@ h1 {
     min-height: 200px;
 }
 
+.form-options {
+    margin: 1.5rem 0;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.form-checkbox {
+    margin-right: 0.5rem;
+}
+
+.form-check-label {
+    font-weight: 500;
+    color: #555;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
     margin-top: 2rem;
+}
+
+.form-hint {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
 }
 
 /* Кнопки */
@@ -252,11 +314,44 @@ h1 {
     background: #5a6268;
 }
 
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 0.7rem 1.5rem;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-warning {
+    background: #ffd700;
+    color: #333;
+}
+
+.btn-warning:hover {
+    background: #ffc400;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
 .btn-edit {
     background: #3498db;
     color: white;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
 }
 
 .btn-edit:hover {
@@ -266,8 +361,6 @@ h1 {
 .btn-delete {
     background: #e74c3c;
     color: white;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
 }
 
 .btn-delete:hover {
@@ -295,6 +388,44 @@ h1 {
     border-radius: 5px;
     border: 1px solid #c3e6cb;
     margin-bottom: 0.5rem;
+}
+
+/* Пользователи */
+.users-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.users-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.user-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #667eea;
+}
+
+.user-login {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.user-real-name {
+    color: #666;
+    margin: 0;
+}
+
+.no-users {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Футер */
@@ -335,9 +466,15 @@ footer {
         gap: 1rem;
     }
 
-    .article-actions {
+    .article-controls {
         margin-left: 0;
         justify-content: center;
+    }
+
+    .article-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
     }
 
     .form-actions {
@@ -346,38 +483,5 @@ footer {
 
     .btn {
         width: 100%;
-    }
-
-    .btn-logout {
-    background: #e74c3c;
-    color: white;
-    }
-
-    .btn-logout:hover {
-    background: #c0392b;
-    }
-
-    .btn-outline {
-    background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
-    padding: 0.7rem 1.5rem;
-    }
-
-    .btn-outline:hover {
-        background: #667eea;
-        color: white;
-    }
-
-    .auth-form {
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .form-hint {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    display: block;
     }
 }

@@ -17,9 +17,14 @@
                     {% if login %}
                     <span class="nav-user">Привет, {{ username }}!</span>
                     <a href="{{ url_for('lab5.list_articles') }}" class="nav-link">Мои статьи</a>
+                    <a href="{{ url_for('lab5.public_articles') }}" class="nav-link">Публичные</a>
+                    <a href="{{ url_for('lab5.users_list') }}" class="nav-link">Пользователи</a>
+                    <a href="{{ url_for('lab5.profile') }}" class="nav-link">Профиль</a>
                     <a href="{{ url_for('lab5.create') }}" class="nav-link">Новая статья</a>
                     <a href="{{ url_for('lab5.logout') }}" class="nav-link logout">Выйти</a>
                     {% else %}
+                    <a href="{{ url_for('lab5.public_articles') }}" class="nav-link">Публичные статьи</a>
+                    <a href="{{ url_for('lab5.users_list') }}" class="nav-link">Пользователи</a>
                     <a href="{{ url_for('lab5.login') }}" class="nav-link">Войти</a>
                     <a href="{{ url_for('lab5.register') }}" class="nav-link">Регистрация</a>
                     {% endif %}

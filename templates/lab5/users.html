@@ -1,0 +1,30 @@
+{% extends "lab5/base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<div class="users-container">
+    <h1>Зарегистрированные пользователи</h1>
+    
+    {% if users %}
+    <div class="users-list">
+        {% for user in users %}
+        <div class="user-card">
+            <div class="user-info">
+                <h3 class="user-login">{{ user.login }}</h3>
+                {% if user.real_name %}
+                <p class="user-real-name">Имя: {{ user.real_name }}</p>
+                {% else %}
+                <p class="user-real-name">Имя: не указано</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-users">
+        <p>Пока нет зарегистрированных пользователей</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

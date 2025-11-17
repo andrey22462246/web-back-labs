@@ -1,0 +1,59 @@
+{% extends "lab5/base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<div class="articles-header">
+    <h1>Публичные статьи</h1>
+    {% if login %}
+    <a href="{{ url_for('lab5.list_articles') }}" class="btn btn-primary">Мои статьи</a>
+    {% else %}
+    <a href="{{ url_for('lab5.login') }}" class="btn btn-primary">Войти</a>
+    {% endif %}
+</div>
+
+{% if articles %}
+    <div class="articles-list">
+        {% for article in articles %}
+        <div class="article-card {% if article.is_favorite %}favorite{% endif %}">
+            <div class="article-header">
+                <h2 class="article-title">{{ article.title }}</h2>
+                {% if article.is_favorite %}
+                <span class="favorite-badge">⭐ Избранное</span>
+                {% endif %}
+            </div>
+            <div class="article-content">
+                <p>{{ article.article_text }}</p>
+            </div>
+            <div class="article-footer">
+                <span class="article-author">
+                    Автор: 
+                    {% if article.real_name %}
+                        {{ article.real_name }} ({{ article.login }})
+                    {% else %}
+                        {{ article.login }}
+                    {% endif %}
+                </span>
+                <span class="article-date">
+                    {% if article.ts_public %}
+                        {{ article.ts_public }}
+                    {% else %}
+                        Недавно
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-articles">
+        <h2>Публичных статей пока нет</h2>
+        <p>Станьте первым, кто поделится своей статьей!</p>
+        {% if login %}
+        <a href="{{ url_for('lab5.create') }}" class="btn btn-primary">Создать статью</a>
+        {% else %}
+        <a href="{{ url_for('lab5.register') }}" class="btn btn-primary">Зарегистрироваться</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
