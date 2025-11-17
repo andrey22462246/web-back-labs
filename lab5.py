@@ -104,8 +104,13 @@ def create():
     title = request.form.get('title')
     article_text = request.form.get('article_text')
 
+    # Проверяем что поля не пустые
+    if not title or not article_text:
+        return render_template('lab5/create_article.html', error="Заполните все поля")
+
     conn, cur = db_connect()
 
+    # Ищем пользователя
     if current_app.config['DB_TYPE'] == 'postgres':
         cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
     else:
@@ -118,19 +123,23 @@ def create():
         return render_template('lab5/create_article.html', error="Пользователь не найден")
     
     login_id = user["id"]
-    
-    if not login_id:
-        db_close(conn, cur)
-        return render_template('lab5/create_article.html', error="Ошибка: ID пользователя не найден")
-    
-    print(f"DEBUG: Inserting article with login_id={login_id}") 
 
-    if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
-                   (login_id, title, article_text))
-    else:
-        cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
-                   (login_id, title, article_text))
+    # Вставляем статью
+    try:
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
+                       (login_id, title, article_text))
+        else:
+            cur.execute("INSERT INTO articles(login_id, title, article_text) VALUES (?, ?, ?);", 
+                       (login_id, title, article_text))
+        
+        conn.commit()  # Явное сохранение
+        print(f"DEBUG: Article inserted successfully")  # Отладка
+        
+    except Exception as e:
+        print(f"DEBUG: Error inserting article: {e}")  # Отладка ошибки
+        conn.rollback()
+        return render_template('lab5/create_article.html', error=f"Ошибка сохранения: {e}")
 
     db_close(conn, cur)
     return redirect('/lab5')
