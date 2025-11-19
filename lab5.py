@@ -20,7 +20,7 @@ def db_connect():
             host='127.0.0.1',
             database='andrey_shkuropatov_knowledge_base',
             user='andrey_shkuropatov_knowledge_base',
-            password='123'
+            password='123',
         )
         cur = conn.cursor(cursor_factory=RealDictCursor)
     else:
