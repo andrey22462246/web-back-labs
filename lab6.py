@@ -1,13 +1,51 @@
 from flask import Blueprint, render_template, request, redirect, session
 import sqlite3
+import os
 
 lab6 = Blueprint('lab6',__name__)
 
 def get_db_connection():
-    """Подключение к существующей SQLite базе данных"""
+    """Подключение к SQLite - база в той же папке что и app.py"""
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+def init_offices_table():
+    """Создаем таблицу если её нет"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS offices (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                number INTEGER NOT NULL UNIQUE,
+                tenant TEXT DEFAULT '',
+                price INTEGER NOT NULL
+            )
+        ''')
+        
+        # Проверяем есть ли данные
+        cursor.execute('SELECT COUNT(*) FROM offices')
+        count = cursor.fetchone()[0]
+        
+        if count == 0:
+            offices_data = [
+                (1, 1100), (2, 1200), (3, 1300), (4, 1400), (5, 1500),
+                (6, 1600), (7, 1700), (8, 1800), (9, 1900), (10, 2000)
+            ]
+            cursor.executemany('INSERT INTO offices (number, price) VALUES (?, ?)', offices_data)
+            conn.commit()
+            print("✅ Таблица offices создана и заполнена")
+        else:
+            print("✅ Таблица offices уже существует с данными")
+        
+        conn.close()
+    except Exception as e:
+        print(f"❌ Database error: {e}")
+
+# Инициализируем при старте
+init_offices_table()
 
 @lab6.route('/lab6/')
 def lab():
@@ -34,6 +72,7 @@ def api():
             offices = cursor.fetchall()
             conn.close()
             
+            # Конвертируем в список словарей
             offices_list = []
             for office in offices:
                 offices_list.append({
@@ -60,6 +99,7 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
+            # Проверяем существует ли офис и его статус
             cursor.execute('SELECT * FROM offices WHERE number = ?', (office_number,))
             office = cursor.fetchone()
             
@@ -79,6 +119,7 @@ def api():
                     'id': id
                 }
             
+            # Бронируем офис
             cursor.execute('UPDATE offices SET tenant = ? WHERE number = ?', 
                          (login, office_number))
             conn.commit()
@@ -102,6 +143,7 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
+            # Проверяем офис
             cursor.execute('SELECT * FROM offices WHERE number = ?', (office_number,))
             office = cursor.fetchone()
             
@@ -129,6 +171,7 @@ def api():
                     'id': id
                 }
             
+            # Освобождаем офис
             cursor.execute('UPDATE offices SET tenant = ? WHERE number = ?', 
                          ('', office_number))
             conn.commit()
@@ -151,6 +194,7 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
+            # Получаем офисы текущего пользователя
             cursor.execute('SELECT * FROM offices WHERE tenant = ?', (login,))
             user_offices = cursor.fetchall()
             conn.close()
