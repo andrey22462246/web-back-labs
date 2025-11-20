@@ -4,7 +4,7 @@ lab6 = Blueprint('lab6',__name__)
 
 offices = []
 for i in range(1,11):
-    offices.append({"number":1, "tenant": ""})
+    offices.append({"number": i, "tenant": ""})  
 
 @lab6.route('/lab6/')
 def lab():
@@ -14,7 +14,6 @@ def lab():
 def api():
     data = request.json
     id = data['id']
-    
     
     login = session.get('login')
     if not login:
@@ -56,4 +55,42 @@ def api():
             'error': {'code': -32000, 'message': 'Office not found'},
             'id': id
         }
+
+    
+    elif data['method'] == 'release':
+        office_number = data['params']
+        for office in offices:
+            if office['number'] == office_number:
+                
+                if office['tenant'] == '':
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 3,
+                            'message': 'Office is not booked'
+                        },
+                        'id': id
+                    }
+                
+                if office['tenant'] != login:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 4,
+                            'message': 'You can only release your own booking'
+                        },
+                        'id': id
+                    }
+                
+                office['tenant'] = ''
+                return {
+                    'jsonrpc': '2.0',
+                    'result': 'success',
+                    'id': id
+                }
         
+        return {
+            'jsonrpc': '2.0',
+            'error': {'code': -32000, 'message': 'Office not found'},
+            'id': id
+        }
