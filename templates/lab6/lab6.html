@@ -3,6 +3,130 @@
 {% block lab %}Лабораторная работа 6{% endblock %}
 
 {% block script %}
+<style>
+.office-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.page-title {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.page-subtitle {
+    color: #7f8c8d;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.office-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.office-item {
+    background: white;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.office-item:hover {
+    border-color: #3498db;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+.office-info {
+    flex-grow: 1;
+}
+
+.office-number {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.2em;
+}
+
+.office-status {
+    color: #7f8c8d;
+    margin: 5px 0;
+}
+
+.office-price {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.office-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-book {
+    background: #3498db;
+    color: white;
+}
+
+.btn-book:hover {
+    background: #2980b9;
+}
+
+.btn-release {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-release:hover {
+    background: #c0392b;
+}
+
+.total-cost {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.status-free {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.status-occupied {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.loading {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    padding: 40px;
+}
+</style>
+
 <script>
 function getOfficeList(){
     const url = '/lab6/json-rpc-api/';
@@ -11,6 +135,9 @@ function getOfficeList(){
         'method': 'info',
         'id': Math.round(Math.random()*1000)
     };
+    
+    const ul = document.getElementById('office-list');
+    ul.innerHTML = '<div class="loading">Загрузка списка офисов...</div>';
     
     fetch(url, {
         method: 'POST',
@@ -29,14 +156,26 @@ function getOfficeList(){
         for(let i = 0; i < office_list.length; i++) {
             const office = office_list[i];
             const li = document.createElement('li');
+            li.className = 'office-item';
+            
             li.innerHTML = `
-                <strong>Офис ${office.number}</strong> - 
-                ${office.price} руб./мес. - 
-                <span style="color: ${office.tenant ? 'red' : 'green'}">
-                    ${office.tenant || 'Свободен'}
-                </span>
-                <button onclick="booking(${office.number})" style="margin-left: 10px;">Забронировать</button>
-                <button onclick="release(${office.number})" style="margin-left: 5px;">Освободить</button>
+                <div class="office-info">
+                    <div class="office-number">Офис ${office.number}</div>
+                    <div class="office-status">
+                        Статус: <span class="${office.tenant ? 'status-occupied' : 'status-free'}">
+                            ${office.tenant || 'Свободен'}
+                        </span>
+                    </div>
+                    <div class="office-price">${office.price} руб./мес.</div>
+                </div>
+                <div class="office-actions">
+                    <button class="btn btn-book" onclick="booking(${office.number})">
+                        Забронировать
+                    </button>
+                    <button class="btn btn-release" onclick="release(${office.number})">
+                        Освободить
+                    </button>
+                </div>
             `;
             ul.appendChild(li);
         }
@@ -45,7 +184,7 @@ function getOfficeList(){
     })
     .catch(function(error) {
         console.error('Error:', error);
-        document.getElementById('office-list').innerHTML = '<li>Ошибка загрузки офисов</li>';
+        document.getElementById('office-list').innerHTML = '<div class="loading" style="color: #e74c3c;">Ошибка загрузки офисов</div>';
     });
 }
 
@@ -69,15 +208,15 @@ function updateTotalCost() {
         const totalElement = document.getElementById('total-cost');
         if (data.result.count > 0) {
             totalElement.innerHTML = `
-                <div style="background: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin-top: 20px;">
-                    <strong>Общая стоимость ваших офисов: ${data.result.total_cost} руб./мес.</strong><br>
+                <div class="total-cost">
+                    💼 Общая стоимость ваших офисов: <strong>${data.result.total_cost} руб./мес.</strong><br>
                     <small>Арендовано офисов: ${data.result.count}</small>
                 </div>
             `;
         } else {
             totalElement.innerHTML = `
-                <div style="background: #7f8c8d; color: white; padding: 15px; border-radius: 5px; text-align: center; margin-top: 20px;">
-                    У вас нет арендованных офисов
+                <div class="total-cost">
+                    🏢 У вас нет арендованных офисов
                 </div>
             `;
         }
@@ -143,13 +282,15 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endblock %}
 
 {% block main %}
-    <h1>API JSON-RPC</h1>
-    <div>Лабораторная работа 6 - Система аренды офисов</div>
+<div class="office-container">
+    <h1 class="page-title">API JSON-RPC</h1>
+    <div class="page-subtitle">
+        Лабораторная работа 6 - Система управления арендой офисов
+    </div>
     
     <h2>Список офисов</h2>
-    <ul id="office-list" style="list-style: none; padding: 0;">
-        <li>Загрузка...</li>
-    </ul>
+    <ul class="office-list" id="office-list"></ul>
     
     <div id="total-cost"></div>
+</div>
 {% endblock %}
