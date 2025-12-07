@@ -38,7 +38,7 @@ def init_offices_table():
             conn.commit()
             print("✅ Таблица offices создана и заполнена")
         else:
-            print("✅ Таблица offices уже существует с данными")
+            print("✅")
         
         conn.close()
     except Exception as e:
