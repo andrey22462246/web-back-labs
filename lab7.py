@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session, abort, jsonify
+from flask import Blueprint, render_template, request, abort, jsonify
 
 lab7 = Blueprint('lab7',__name__)
 
@@ -42,19 +42,19 @@ def lab():
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
-    return films
+    return jsonify(films)
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
     if (id >= 0 and id < len(films)):
-        return films[id]
+        return jsonify(films[id])
     else:   
         abort(404)
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
     if not (0 <= id < len(films)):
-        return abort(404)
+        abort(404)
 
     del films[id]
     return '', 204
@@ -63,17 +63,27 @@ def del_film(id):
 def put_film(id):
     if 0 <= id < len(films):
         film = request.get_json()
-        if film['description'] == '':
-            return {'description': 'Заполните описание'}, 400
+        
+        if not film.get('description') or film['description'].strip() == '':
+            return jsonify({'description': 'Заполните описание'}), 400
+        
+        if film.get('title_ru') and (not film.get('title') or film['title'].strip() == ''):
+            film['title'] = film['title_ru']
+        
         films[id] = film
-        return films[id]
+        return jsonify(films[id])
     else:
-        return abort(404)
+        abort(404)
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
     film = request.get_json()
-    if film['description'] == '':
-            return {'description': 'Заполните описание'}, 400
+    
+    if not film.get('description') or film['description'].strip() == '':
+        return jsonify({'description': 'Заполните описание'}), 400
+    
+    if film.get('title_ru') and (not film.get('title') or film['title'].strip() == ''):
+        film['title'] = film['title_ru']
+    
     films.append(film)  
     return jsonify({"id": len(films) - 1}), 201

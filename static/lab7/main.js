@@ -29,21 +29,9 @@ function fillFilmList() {
                 delButton.onclick = function(){
                     deleteFilm(i, films[i].title_ru);
                 };
-                function deleteFilm(id, title){
-                    if (! confirm(`Вы точно хотите удалить фильм "${title}"?`))
-                        return;
-
-                    fetch(`/lab7/rest-api/films/${id}`, { method: 'DELETE' })
-                        .then(function() {
-                            fillFilmList();
-                        });
-                }
 
                 tdActions.append(editButton);
                 tdActions.append(delButton);
-
-                tr.append(tdTitle);
-                tr.append(tdTitleRus);
 
                 tr.append(tdTitle);
                 tr.append(tdTitleRus);
@@ -51,10 +39,20 @@ function fillFilmList() {
                 tr.append(tdActions);
 
                 tbody.append(tr);
-                
             }
         })
 }
+
+function deleteFilm(id, title){
+    if (!confirm(`Вы точно хотите удалить фильм "${title}"?`))
+        return;
+
+    fetch(`/lab7/rest-api/films/${id}`, { method: 'DELETE' })
+        .then(function() {
+            fillFilmList();
+        });
+}
+
 function showModal(){
     document.querySelector('div.modal').style.display = 'block';
     document.querySelector('.modal-background').style.display = 'block';
@@ -63,13 +61,16 @@ function showModal(){
         errorElement.innerText = '';
     }
 }
+
 function hideModal(){
     document.querySelector('div.modal').style.display = 'none';
     document.querySelector('.modal-background').style.display = 'none';
 }
+
 function cancel(){
     hideModal();
 }
+
 function addFilm() {
     document.getElementById('id').value = "";
     document.getElementById('title').value = "";
@@ -78,6 +79,7 @@ function addFilm() {
     document.getElementById('description').value = "";
     showModal();
 }
+
 function editFilm(id) {
     fetch(`/lab7/rest-api/films/${id}`)  
         .then(function(data) {
@@ -92,14 +94,20 @@ function editFilm(id) {
             showModal();
         });
 }
+
 function sendFilm() {
     const id = document.getElementById('id').value;
+    
+    const title = document.getElementById('title').value;
+    const title_ru = document.getElementById('title_ru').value;
+    
     const film = {
-        title: document.getElementById('title').value,
-        title_ru: document.getElementById('title_ru').value,
+        title: title || title_ru,
+        title_ru: title_ru,
         year: document.getElementById('year').value,
         description: document.getElementById('description').value
     }
+    
     const errorElement = document.getElementById('description-error');
     if (errorElement) {
         errorElement.innerText = '';
@@ -122,7 +130,8 @@ function sendFilm() {
         return resp.json();
     })
     .then(function(errors) {
-        if (errors.description)
+        if (errors && errors.description) {
             document.getElementById('description-error').innerText = errors.description;
+        }
     });
 }
