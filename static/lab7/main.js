@@ -1,11 +1,31 @@
 function fillFilmList() {
     fetch('/lab7/rest-api/films/')
-        .then(function(data) {
-            return data.json();
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new TypeError("Получен не JSON, а: " + contentType);
+            }
+            
+            return response.json();
         })
         .then(function(films) {
             let tbody = document.getElementById('film-list');
+            if (!tbody) {
+                console.error('Элемент #film-list не найден!');
+                return;
+            }
+            
             tbody.innerHTML = '';
+            
+            if (!Array.isArray(films)) {
+                console.error('Получены не массив фильмов:', films);
+                return;
+            }
+            
             for (let i = 0; i < films.length; i++) {
                 let tr = document.createElement('tr');
 
@@ -49,6 +69,12 @@ function fillFilmList() {
         })
         .catch(function(error) {
             console.error('Ошибка загрузки фильмов:', error);
+            
+            if (error.message.includes('Unexpected token')) {
+                alert('Сервер вернул HTML вместо JSON. Проверьте консоль браузера для деталей.');
+            } else {
+                alert('Ошибка загрузки фильмов: ' + error.message);
+            }
         });
 }
 
@@ -57,12 +83,15 @@ function deleteFilm(id, title){
         return;
 
     fetch(`/lab7/rest-api/films/${id}`, { method: 'DELETE' })
-        .then(function() {
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             fillFilmList();
         })
         .catch(function(error) {
             console.error('Ошибка удаления:', error);
-            alert('Ошибка при удалении фильма');
+            alert('Ошибка при удалении фильма: ' + error.message);
         });
 }
 
@@ -96,8 +125,17 @@ function addFilm() {
 
 function editFilm(id) {
     fetch(`/lab7/rest-api/films/${id}`)  
-        .then(function(data) {
-            return data.json();
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new TypeError("Получен не JSON, а: " + contentType);
+            }
+            
+            return response.json();
         })
         .then(function(film) {
             document.getElementById('id').value = film.id;
@@ -109,7 +147,7 @@ function editFilm(id) {
         })
         .catch(function(error) {
             console.error('Ошибка загрузки фильма:', error);
-            alert('Не удалось загрузить фильм');
+            alert('Не удалось загрузить фильм: ' + error.message);
         });
 }
 
@@ -141,13 +179,19 @@ function sendFilm() {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(film)
     })
-    .then(function(resp) {
-        if (resp.ok){
+    .then(function(response) {
+        if (response.ok){
             fillFilmList();  
             hideModal();
             return {};
         }
-        return resp.json();
+        
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new TypeError("Сервер вернул не JSON: " + contentType);
+        }
+        
+        return response.json();
     })
     .then(function(errors) {
         if (errors) {
