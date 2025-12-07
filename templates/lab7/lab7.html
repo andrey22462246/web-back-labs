@@ -123,7 +123,15 @@ table button:nth-child(2) {
 
 .error-message {
     color: red;
-} 
+    font-size: 12px;
+    margin-top: 3px;
+    min-height: 14px;
+}
+
+.modal input:invalid, 
+.modal textarea:invalid {
+    border-color: red;
+}
 </style>
 {% endblock %}
 
@@ -149,27 +157,32 @@ table button:nth-child(2) {
         <button onclick="addFilm()">Добавить фильм</button>
     </div>
 
+<div class="modal-background" onclick="cancel()"></div>
 <div class="modal">
     <input type="hidden" id="id">
+    
     <label>
         Название фильма на русском:
-        <input type="text" id="title_ru">  
+        <input type="text" id="title_ru" required>
+        <div id="title_ru-error" class="error-message"></div>
     </label><br>
 
     <label>
-        Название фильма на оригинальном языке
+        Название фильма на оригинальном языке:
         <i>(если фильм русский, то оставьте пустым):</i>
         <input type="text" id="title">
+        <div id="title-error" class="error-message"></div>
     </label><br>
 
     <label>
         Год выпуска:
-        <input type="number" id="year">
+        <input type="number" id="year" min="1895" max="2025" required>
+        <div id="year-error" class="error-message"></div>
     </label><br>
 
     <label>
         Описание:
-        <textarea id="description"></textarea>
+        <textarea id="description" maxlength="2000" required></textarea>
         <div id="description-error" class="error-message"></div>
     </label><br>
 
