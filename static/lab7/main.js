@@ -57,6 +57,7 @@ function fillFilmList() {
 }
 function showModal(){
     document.querySelector('div.modal').style.display = 'block';
+    document.querySelector('.modal-background').style.display = 'block';
     const errorElement = document.getElementById('description-error');
     if (errorElement) {
         errorElement.innerText = '';
@@ -64,6 +65,7 @@ function showModal(){
 }
 function hideModal(){
     document.querySelector('div.modal').style.display = 'none';
+    document.querySelector('.modal-background').style.display = 'none';
 }
 function cancel(){
     hideModal();
@@ -97,6 +99,10 @@ function sendFilm() {
         title_ru: document.getElementById('title_ru').value,
         year: document.getElementById('year').value,
         description: document.getElementById('description').value
+    }
+    const errorElement = document.getElementById('description-error');
+    if (errorElement) {
+        errorElement.innerText = '';
     }
     
     const url = `/lab7/rest-api/films/${id}`;
