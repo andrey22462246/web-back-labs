@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Редактирование статьи{% endblock %}
+
+{% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab8/style.css') }}">
+<style>
+    /* ... существующие стили ... */
+    
+    .checkbox-group {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        font-weight: normal;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        cursor: pointer;
+    }
+</style>
+<script>
+    function updateCharCount() {
+        const textarea = document.getElementById('content');
+        const counter = document.getElementById('charCount');
+        counter.textContent = textarea.value.length + ' символов';
+    }
+    
+    function confirmDelete() {
+        return confirm('Вы уверены, что хотите удалить эту статью? Это действие нельзя отменить.');
+    }
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="lab8-container">
+    <div class="lab8-header">
+        <h1>Редактирование статьи</h1>
+        <p>Внесите изменения в вашу статью</p>
+    </div>
+    
+    <div class="user-status">
+        <div class="user-avatar">{{ username[0].upper() if username != 'anonymous' else 'A' }}</div>
+        <div class="user-name">Пользователь: {{ username }}</div>
+    </div>
+    
+    <div class="edit-form">
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/lab8/edit/{{ article.id }}" method="post">
+            <div class="form-group">
+                <label for="title">Заголовок статьи:</label>
+                <input type="text" id="title" name="title" required maxlength="50" 
+                       value="{{ article.title }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="content">Текст статьи:</label>
+                <textarea id="content" name="content" required 
+                          oninput="updateCharCount()">{{ article.article_text }}</textarea>
+                <div class="char-counter" id="charCount">{{ article.article_text|length }} символов</div>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+                        Добавить в избранное
+                    </label>
+                    <label>
+                        <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+                        Опубликовать публично
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="save-btn">Сохранить изменения</button>
+                <a href="/lab8/articles" class="cancel-btn">Отмена</a>
+            </div>
+        </form>
+        
+        <form action="/lab8/delete/{{ article.id }}" method="post" onsubmit="return confirmDelete()" style="margin-top: 20px;">
+            <button type="submit" class="delete-btn">Удалить статью</button>
+        </form>
+        
+        <div class="form-links">
+            <p><a href="/lab8/articles">← Вернуться к списку статей</a></p>
+            <p><a href="/lab8/">← Вернуться на главную</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

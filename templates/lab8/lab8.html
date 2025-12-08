@@ -3,21 +3,28 @@
 {% block lab %}Лабораторная работа 8{% endblock %}
 
 {% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab8/style.css') }}">
 <style>
-    .user-info {
+    .lab8-main {
+        text-align: center;
+    }
+    
+    .user-status {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin: 20px 0;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px auto;
         padding: 15px;
-        background-color: #f5f5f5;
-        border-radius: 8px;
+        background: #f5f5f5;
+        border-radius: 10px;
         border-left: 4px solid #4CAF50;
+        max-width: 400px;
     }
-
-    .user-icon {
-        width: 40px;
-        height: 40px;
+    
+    .user-avatar {
+        width: 50px;
+        height: 50px;
         background: #4CAF50;
         border-radius: 50%;
         display: flex;
@@ -25,170 +32,165 @@
         justify-content: center;
         color: white;
         font-weight: bold;
-        font-size: 18px;
+        font-size: 20px;
     }
-
-    .user-info span {
-        font-size: 1.1em;
+    
+    .user-name {
+        font-size: 1.2em;
         color: #333;
     }
-
-    .nav-links {
+    
+    .lab8-nav {
         display: flex;
         gap: 15px;
         margin: 30px 0;
         flex-wrap: wrap;
+        justify-content: center;
     }
-
-    .nav-links a {
+    
+    .lab8-nav a {
         text-decoration: none;
         color: white;
-        padding: 12px 24px;
-        border-radius: 6px;
+        padding: 12px 25px;
+        border-radius: 8px;
         transition: all 0.3s;
+        background: #4CAF50;
         font-weight: 500;
-        background-color: #4CAF50;
-        border: none;
-        cursor: pointer;
-        font-size: 1em;
+        min-width: 150px;
     }
-
-    .nav-links a:hover {
-        background-color: #45a049;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    
+    .lab8-nav a:hover {
+        background: #45a049;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-
+    
     .features {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 25px;
         margin-top: 40px;
     }
-
+    
     .feature-card {
-        background: #fff;
+        background: white;
         padding: 25px;
         border-radius: 10px;
         text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid #e0e0e0;
+        border: 1px solid #ddd;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.3s;
     }
-
+    
     .feature-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
-
+    
     .feature-icon {
         font-size: 2.5em;
         margin-bottom: 20px;
         color: #4CAF50;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
-
+    
     .feature-card h3 {
         color: #333;
         margin-bottom: 15px;
         font-size: 1.3em;
-        font-weight: 600;
     }
-
+    
     .feature-card p {
         color: #666;
         line-height: 1.5;
-        font-size: 0.95em;
     }
-
-    .welcome-text {
-        text-align: center;
-        margin-bottom: 30px;
-        padding: 20px;
-        background: linear-gradient(to right, #f8fff8, #ffffff);
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-    }
-
-    .welcome-text h2 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.8em;
-    }
-
-    .welcome-text p {
-        color: #666;
-        font-size: 1.1em;
-        line-height: 1.6;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    @media (max-width: 768px) {
-        .nav-links {
-            flex-direction: column;
-        }
-        
-        .nav-links a {
-            text-align: center;
-            width: 100%;
-        }
-        
-        .features {
-            grid-template-columns: 1fr;
-        }
-    }
-
+    
     .action-button {
         margin-top: 20px;
-        text-align: center;
     }
-
+    
     .action-button button {
-        background-color: #2196F3;
+        background: #2196F3;
         color: white;
-        padding: 12px 30px;
+        padding: 10px 20px;
         border: none;
-        border-radius: 6px;
-        font-size: 1.1em;
+        border-radius: 5px;
         cursor: pointer;
+        font-size: 1em;
         transition: all 0.3s;
     }
-
+    
     .action-button button:hover {
-        background-color: #1976D2;
+        background: #1976D2;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        box-shadow: 0 4px 8px rgba(33,150,243,0.3);
+    }
+    
+    .flash-messages {
+        max-width: 600px;
+        margin: 20px auto;
+    }
+    
+    .flash-message {
+        padding: 15px;
+        border-radius: 5px;
+        margin: 10px 0;
+        border: 1px solid;
+    }
+    
+    .flash-success {
+        background: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+    
+    .flash-error {
+        background: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
     }
 </style>
 {% endblock %}
 
 {% block main %}
-    <div class="user-info">
-        <div class="user-icon">A</div>
-        <span>Пользователь: {{ username|default('anonymous', true) }}</span>
+<div class="lab8-container lab8-main">
+    <div class="lab8-header">
+        <h1>Лабораторная работа 8</h1>
+        <p>Система управления пользователями и статьями</p>
     </div>
-
-    <div class="welcome-text">
-        <h2>Добро пожаловать в лабораторную работу 8!</h2>
-        <p>Эта система предназначена для управления пользователями и статьями. Используйте меню навигации для доступа к различным функциям системы.</p>
+    
+    <div class="user-status">
+        <div class="user-avatar">{{ username[0].upper() if username != 'anonymous' else 'A' }}</div>
+        <div class="user-name">Пользователь: {{ username }}</div>
     </div>
-
-    <div class="nav-links">
+    
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    {% if username != 'anonymous' %}
+    <div class="lab8-nav">
+        <a href="/lab8/logout">Выйти</a>
+    </div>
+    {% endif %}
+    
+    <div class="lab8-nav">
         <a href="/lab8/login">Вход в систему</a>
         <a href="/lab8/register">Регистрация</a>
         <a href="/lab8/articles">Список статей</a>
         <a href="/lab8/create">Создать статью</a>
     </div>
-
+    
     <div class="features">
         <div class="feature-card">
             <div class="feature-icon">🔐</div>
             <h3>Авторизация</h3>
-            <p>Войдите в систему, используя свои учетные данные для получения доступа к персональным функциям</p>
+            <p>Войдите в систему для доступа к персональным функциям</p>
             <div class="action-button">
                 <button onclick="window.location.href='/lab8/login'">Войти</button>
             </div>
@@ -196,7 +198,7 @@
         <div class="feature-card">
             <div class="feature-icon">📝</div>
             <h3>Регистрация</h3>
-            <p>Создайте новый аккаунт, если у вас еще нет учетной записи в системе</p>
+            <p>Создайте новый аккаунт в системе</p>
             <div class="action-button">
                 <button onclick="window.location.href='/lab8/register'">Зарегистрироваться</button>
             </div>
@@ -204,7 +206,7 @@
         <div class="feature-card">
             <div class="feature-icon">📚</div>
             <h3>Библиотека статей</h3>
-            <p>Просматривайте коллекцию статей, опубликованных пользователями системы</p>
+            <p>Просматривайте опубликованные статьи</p>
             <div class="action-button">
                 <button onclick="window.location.href='/lab8/articles'">К статьям</button>
             </div>
@@ -212,12 +214,11 @@
         <div class="feature-card">
             <div class="feature-icon">✏️</div>
             <h3>Создание контента</h3>
-            <p>Напишите и опубликуйте свою собственную статью для других пользователей</p>
+            <p>Напишите и опубликуйте свою статью</p>
             <div class="action-button">
                 <button onclick="window.location.href='/lab8/create'">Создать</button>
             </div>
         </div>
     </div>
-
-    
+</div>
 {% endblock %}
