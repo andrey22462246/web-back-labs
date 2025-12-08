@@ -5,7 +5,49 @@
 {% block script %}
 <link rel="stylesheet" href="{{ url_for('static', filename='lab8/style.css') }}">
 <style>
-    /* ... существующие стили ... */
+    .edit-form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+    
+    .form-group textarea {
+        min-height: 300px;
+        resize: vertical;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
     
     .checkbox-group {
         display: flex;
@@ -27,6 +69,154 @@
         height: 18px;
         margin: 0;
         cursor: pointer;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .save-btn {
+        padding: 12px 30px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+    }
+    
+    .save-btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .cancel-btn {
+        padding: 12px 30px;
+        background: #757575;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+    
+    .cancel-btn:hover {
+        background: #616161;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .delete-btn {
+        padding: 12px 30px;
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+    }
+    
+    .delete-btn:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(244, 67, 54, 0.2);
+    }
+    
+    .form-links {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+    
+    .form-links a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+    
+    .form-links a:hover {
+        text-decoration: underline;
+    }
+    
+    .error-message {
+        color: #f44336;
+        background: #ffebee;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #f44336;
+    }
+    
+    .char-counter {
+        text-align: right;
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+    }
+    
+    .lab8-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .lab8-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #4CAF50;
+    }
+    
+    .lab8-header h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+    }
+    
+    .lab8-header p {
+        color: #666;
+        font-size: 1.1em;
+    }
+    
+    .user-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px auto;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        border-left: 4px solid #4CAF50;
+        max-width: 400px;
+    }
+    
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        background: #4CAF50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    
+    .user-name {
+        font-size: 1.2em;
+        color: #333;
     }
 </style>
 <script>
@@ -90,7 +280,7 @@
             
             <div class="form-actions">
                 <button type="submit" class="save-btn">Сохранить изменения</button>
-                <a href="/lab8/articles" class="cancel-btn">Отмена</a>
+                <a href="/lab8/my_articles" class="cancel-btn">Отмена</a>
             </div>
         </form>
         
@@ -99,7 +289,7 @@
         </form>
         
         <div class="form-links">
-            <p><a href="/lab8/articles">← Вернуться к списку статей</a></p>
+            <p><a href="/lab8/my_articles">← Вернуться к списку статей</a></p>
             <p><a href="/lab8/">← Вернуться на главную</a></p>
         </div>
     </div>

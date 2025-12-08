@@ -114,6 +114,11 @@ def show_articles():
     
     all_articles = query.all()
     
+    # Получаем имена авторов для статей
+    for article in all_articles:
+        article.author_name = users.query.get(article.login_id).login if users.query.get(article.login_id) else 'Неизвестен'
+        article.is_owner = current_user.is_authenticated and article.login_id == current_user.id
+    
     return render_template('lab8/articles.html', 
                           articles=all_articles, 
                           username=username,
@@ -139,35 +144,14 @@ def my_articles():
     
     user_articles = query.all()
     
+    # Помечаем статьи как принадлежащие пользователю
+    for article in user_articles:
+        article.is_owner = True
+    
     return render_template('lab8/articles.html', 
                           articles=user_articles, 
                           username=username,
                           show_all_public=False,
-                          search_query=search_query)
-
-@lab8.route('/lab8/favorites')
-@login_required
-def favorites():
-    username = current_user.login if current_user.is_authenticated else 'anonymous'
-    search_query = request.args.get('search', '').strip()
-    
-    query = articles.query.filter_by(login_id=current_user.id, is_favorite=True)
-    
-    if search_query:
-        search_pattern = f'%{search_query}%'
-        query = query.filter(
-            or_(
-                func.lower(articles.title).like(func.lower(search_pattern)),
-                func.lower(articles.article_text).like(func.lower(search_pattern))
-            )
-        )
-    
-    favorite_articles = query.all()
-    
-    return render_template('lab8/articles.html', 
-                          articles=favorite_articles, 
-                          username=username,
-                          show_favorites=True,
                           search_query=search_query)
 
 @lab8.route('/lab8/create', methods=['GET', 'POST'])
