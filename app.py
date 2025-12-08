@@ -6,6 +6,7 @@ from lab4 import lab4
 from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
+from lab8 import lab8
 import datetime
 import math
 import os 
@@ -23,6 +24,7 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
+app.register_blueprint(lab8)
 
 error_404_log = []
 
@@ -124,7 +126,8 @@ def main_page():
             <li><a href="/lab4">📪 Лабораторная работа 4</a></li>
             <li><a href="/lab5">🛢️ Лабораторная работа 5</a></li>
             <li><a href="/lab6">😃 Лабораторная работа 6</a></li>
-            <li><a href="/lab7">😴 Лабораторная работа 7</a></li>      
+            <li><a href="/lab7">😴 Лабораторная работа 7</a></li>
+            <li><a href="/lab8">📝 Лабораторная работа 8</a></li>        
         </ul>
     </nav>
 
@@ -169,6 +172,12 @@ def main_page():
             <h3>😴 Лабораторная работа 7</h3>
             <p>API REST</p>
             <a href="/lab7">Перейти к лабораторной →</a>
+        </div>
+
+        <div class="lab-card lab8">
+            <h3>📝 Лабораторная работа 8</h3>
+            <p>Flask и ORM</p>
+            <a href="/lab8">Перейти к лабораторной →</a>
         </div>
     </div>
     
