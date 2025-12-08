@@ -1,234 +1,223 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторная работа 8</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+{% extends "base.html" %}
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+{% block lab %}Лабораторная работа 8{% endblock %}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+{% block script %}
+<style>
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        border-left: 4px solid #4CAF50;
+    }
 
-        .header {
-            background: linear-gradient(to right, #4f46e5, #7c3aed);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+    .user-icon {
+        width: 40px;
+        height: 40px;
+        background: #4CAF50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+    }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+    .user-info span {
+        font-size: 1.1em;
+        color: #333;
+    }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            font-size: 1.1em;
-        }
+    .nav-links {
+        display: flex;
+        gap: 15px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
 
-        .user-icon {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4f46e5;
-            font-weight: bold;
-        }
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        transition: all 0.3s;
+        font-weight: 500;
+        background-color: #4CAF50;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
 
-        .nav {
-            background: #f8fafc;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
+    .nav-links a:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .feature-card {
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #4CAF50;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+        font-weight: 600;
+    }
+
+    .feature-card p {
+        color: #666;
+        line-height: 1.5;
+        font-size: 0.95em;
+    }
+
+    .welcome-text {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(to right, #f8fff8, #ffffff);
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .welcome-text h2 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.8em;
+    }
+
+    .welcome-text p {
+        color: #666;
+        font-size: 1.1em;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
         .nav-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
-
+        
         .nav-links a {
-            text-decoration: none;
-            color: #475569;
-            padding: 12px 24px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            border: 2px solid transparent;
-        }
-
-        .nav-links a:hover {
-            background: #4f46e5;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
-        }
-
-        .content {
-            padding: 40px 30px;
-            min-height: 400px;
-        }
-
-        .welcome-section {
             text-align: center;
-            padding: 50px 20px;
+            width: 100%;
         }
-
-        .welcome-section h2 {
-            color: #1e293b;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .welcome-section p {
-            color: #64748b;
-            font-size: 1.2em;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto 30px;
-        }
-
+        
         .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+            grid-template-columns: 1fr;
         }
+    }
 
-        .feature-card {
-            background: #f8fafc;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e2e8f0;
-        }
+    .action-button {
+        margin-top: 20px;
+        text-align: center;
+    }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
+    .action-button button {
+        background-color: #2196F3;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
 
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #4f46e5;
-        }
+    .action-button button:hover {
+        background-color: #1976D2;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    }
+</style>
+{% endblock %}
 
-        .feature-card h3 {
-            color: #1e293b;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
+{% block main %}
+    <div class="user-info">
+        <div class="user-icon">A</div>
+        <span>Пользователь: {{ username|default('anonymous', true) }}</span>
+    </div>
 
-        .feature-card p {
-            color: #64748b;
-            line-height: 1.5;
-        }
+    <div class="welcome-text">
+        <h2>Добро пожаловать в лабораторную работу 8!</h2>
+        <p>Эта система предназначена для управления пользователями и статьями. Используйте меню навигации для доступа к различным функциям системы.</p>
+    </div>
 
-        .footer {
-            background: #f1f5f9;
-            padding: 20px;
-            text-align: center;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-        }
+    <div class="nav-links">
+        <a href="/lab8/login">Вход в систему</a>
+        <a href="/lab8/register">Регистрация</a>
+        <a href="/lab8/articles">Список статей</a>
+        <a href="/lab8/create">Создать статью</a>
+    </div>
 
-        @media (max-width: 768px) {
-            .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .nav-links a {
-                text-align: center;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Лабораторная работа 8</h1>
-            <div class="user-info">
-                <div class="user-icon">A</div>
-                <span>Пользователь: {{ username }}</span>
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3>Авторизация</h3>
+            <p>Войдите в систему, используя свои учетные данные для получения доступа к персональным функциям</p>
+            <div class="action-button">
+                <button onclick="window.location.href='/lab8/login'">Войти</button>
             </div>
         </div>
-
-        <nav class="nav">
-            <ul class="nav-links">
-                <li><a href="/lab8/login">Вход</a></li>
-                <li><a href="/lab8/register">Регистрация</a></li>
-                <li><a href="/lab8/articles">Список статей</a></li>
-                <li><a href="/lab8/create">Создать статью</a></li>
-            </ul>
-        </nav>
-
-        <div class="content">
-            <div class="welcome-section">
-                <h2>Добро пожаловать!</h2>
-                <p>Это интерфейс для лабораторной работы №8. Используйте меню навигации для перехода к различным функциям системы.</p>
-                
-                <div class="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🔐</div>
-                        <h3>Вход в систему</h3>
-                        <p>Авторизуйтесь для доступа к полному функционалу</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📝</div>
-                        <h3>Регистрация</h3>
-                        <p>Создайте новый аккаунт для работы с системой</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📚</div>
-                        <h3>Статьи</h3>
-                        <p>Просматривайте список доступных статей</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">✏️</div>
-                        <h3>Создание</h3>
-                        <p>Напишите и опубликуйте свою статью</p>
-                    </div>
-                </div>
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>Регистрация</h3>
+            <p>Создайте новый аккаунт, если у вас еще нет учетной записи в системе</p>
+            <div class="action-button">
+                <button onclick="window.location.href='/lab8/register'">Зарегистрироваться</button>
             </div>
         </div>
-
-        <div class="footer">
-            <p>© 2025 Лабораторная работа 8. Все права защищены.</p>
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Библиотека статей</h3>
+            <p>Просматривайте коллекцию статей, опубликованных пользователями системы</p>
+            <div class="action-button">
+                <button onclick="window.location.href='/lab8/articles'">К статьям</button>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✏️</div>
+            <h3>Создание контента</h3>
+            <p>Напишите и опубликуйте свою собственную статью для других пользователей</p>
+            <div class="action-button">
+                <button onclick="window.location.href='/lab8/create'">Создать</button>
+            </div>
         </div>
     </div>
-</body>
-</html>
+
+    
+{% endblock %}
