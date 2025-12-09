@@ -2,8 +2,116 @@
 
 {% block lab %}Лабораторная работа 9{% endblock %}
 
-{% block script %}{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='lab9/lab9.js') }}" defer></script>
+<style>
+    :root {
+        --new-year-red: #d32f2f;
+        --new-year-green: #2e7d32;
+        --new-year-gold: #ffd700;
+        --new-year-blue: #1565c0;
+    }
+</style>
+{% endblock %}
 
 {% block main %}
-    <h1>Поздравления</h1>
+<div class="new-year-container">
+    <!-- Снежинки -->
+    <div class="snowflakes" aria-hidden="true">
+        {% for i in range(50) %}
+        <div class="snowflake">❄</div>
+        {% endfor %}
+    </div>
+    
+    <!-- Шапка -->
+    <header class="new-year-header">
+        <h1>🎄 Новогодние Подарки 2025 🎄</h1>
+        <p class="subtitle">Найди свои подарки под ёлкой!</p>
+    </header>
+    
+    <!-- Информационная панель -->
+    <div class="info-panel">
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-icon">🎁</span>
+                <div>
+                    <div class="stat-label">Открыто</div>
+                    <div class="stat-value" id="opened-count">0/3</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📦</span>
+                <div>
+                    <div class="stat-label">Осталось подарков</div>
+                    <div class="stat-value" id="remaining-count">10</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🎅</span>
+                <div>
+                    <div class="stat-label">Статус</div>
+                    <div class="stat-value" id="status">Готов к поиску!</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Правила игры:</h3>
+            <ul>
+                <li>🎯 Найди и открой <strong>3 подарка</strong> из 10</li>
+                <li>🎁 В каждом подарке - уникальное поздравление</li>
+                <li>❄️ Позиции подарков фиксированы в вашей сессии</li>
+                <li>🔄 Обновите страницу, чтобы начать заново</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Поле с подарками -->
+    <div class="gifts-field" id="gifts-container">
+        <!-- Подарки будут добавлены через JavaScript -->
+        <div class="tree-decoration">
+            <div class="tree">🎄</div>
+            <div class="lights">
+                <span class="light red"></span>
+                <span class="light blue"></span>
+                <span class="light green"></span>
+                <span class="light yellow"></span>
+                <span class="light purple"></span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для поздравления -->
+    <div class="modal-overlay" id="congrat-modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="congrat-header">
+                <h2>🎉 Поздравляем! 🎉</h2>
+            </div>
+            <div class="congrat-body">
+                <div class="gift-image-container">
+                    <img id="congrat-gift-image" src="" alt="Подарок">
+                    <div class="gift-name" id="congrat-gift-name"></div>
+                </div>
+                <div class="congrat-text" id="congrat-text"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-continue" onclick="closeModal()">Продолжить поиск</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка сброса -->
+    <div class="controls">
+        <button class="btn-reset" onclick="resetGame()">
+            <i class="fas fa-redo"></i> Начать заново
+        </button>
+        <button class="btn-help" onclick="showHelp()">
+            <i class="fas fa-question-circle"></i> Помощь
+        </button>
+    </div>
+    
+    <!-- Сообщение об ошибке -->
+    <div class="error-message" id="error-message" style="display: none;"></div>
+</div>
 {% endblock %}

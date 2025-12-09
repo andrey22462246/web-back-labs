@@ -1,0 +1,468 @@
+/* Новогодняя тематика */
+.new-year-container {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0a2e36 0%, #1a5f7a 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Снежинки */
+.snowflakes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.snowflake {
+    position: absolute;
+    color: white;
+    font-size: 1.5em;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* Шапка */
+.new-year-header {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.new-year-header h1 {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--new-year-gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    color: #b3e5fc;
+}
+
+/* Информационная панель */
+.info-panel {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin: 1rem auto;
+    max-width: 1200px;
+    border: 2px solid var(--new-year-gold);
+    position: relative;
+    z-index: 2;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    min-width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--new-year-gold);
+}
+
+.instructions {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-left: 4px solid var(--new-year-red);
+}
+
+.instructions h3 {
+    color: var(--new-year-gold);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.instructions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instructions li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.instructions li:before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* Поле с подарками */
+.gifts-field {
+    position: relative;
+    height: 600px;
+    background: rgba(26, 35, 60, 0.7);
+    border-radius: 20px;
+    margin: 2rem auto;
+    max-width: 1200px;
+    border: 3px solid var(--new-year-green);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(46, 125, 50, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(211, 47, 47, 0.1) 0%, transparent 20%);
+}
+
+/* Ёлка */
+.tree-decoration {
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+    z-index: 1;
+}
+
+.tree {
+    font-size: 8rem;
+    filter: drop-shadow(0 0 10px rgba(46, 125, 50, 0.5));
+}
+
+.lights {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+.light {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+}
+
+.light.red { background: #ff5252; animation-delay: 0s; }
+.light.blue { background: #448aff; animation-delay: 0.4s; }
+.light.green { background: #69f0ae; animation-delay: 0.8s; }
+.light.yellow { background: #ffd740; animation-delay: 1.2s; }
+.light.purple { background: #e040fb; animation-delay: 1.6s; }
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Подарки */
+.gift-box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gift-box:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+}
+
+.gift-box.opened {
+    cursor: default;
+    opacity: 0.5;
+    transform: scale(0.9);
+}
+
+.gift-box.opened:hover {
+    transform: scale(0.9);
+    filter: none;
+}
+
+.gift-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.gift-label {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: white;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* Модальное окно */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a237e 0%, #311b92 100%);
+    border-radius: 25px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    border: 3px solid var(--new-year-gold);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.congrat-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.congrat-header h2 {
+    color: var(--new-year-gold);
+    font-family: 'Mountains of Christmas', cursive;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.congrat-body {
+    text-align: center;
+}
+
+.gift-image-container {
+    margin: 1.5rem 0;
+}
+
+#congrat-gift-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+.gift-name {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: var(--new-year-gold);
+    font-weight: bold;
+}
+
+.congrat-text {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border-left: 4px solid var(--new-year-red);
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-continue {
+    background: linear-gradient(to right, var(--new-year-red), var(--new-year-blue));
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Управление */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-reset, .btn-help {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.btn-reset {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+}
+
+.btn-help {
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    color: white;
+}
+
+.btn-reset:hover, .btn-help:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Сообщение об ошибке */
+.error-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff5252;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .new-year-header h1 {
+        font-size: 2rem;
+    }
+    
+    .gifts-field {
+        height: 400px;
+    }
+    
+    .gift-box {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .gift-image {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .tree {
+        font-size: 5rem;
+    }
+    
+    .stats {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stat-item {
+        width: 100%;
+        max-width: 300px;
+    }
+}
