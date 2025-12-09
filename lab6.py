@@ -5,13 +5,11 @@ import os
 lab6 = Blueprint('lab6',__name__)
 
 def get_db_connection():
-    """Подключение к SQLite - база в той же папке что и app.py"""
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_offices_table():
-    """Создаем таблицу если её нет"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -25,7 +23,7 @@ def init_offices_table():
             )
         ''')
         
-        # Проверяем есть ли данные
+       
         cursor.execute('SELECT COUNT(*) FROM offices')
         count = cursor.fetchone()[0]
         
@@ -44,7 +42,7 @@ def init_offices_table():
     except Exception as e:
         print(f"❌ Database error: {e}")
 
-# Инициализируем при старте
+
 init_offices_table()
 
 @lab6.route('/lab6/')
@@ -72,7 +70,6 @@ def api():
             offices = cursor.fetchall()
             conn.close()
             
-            # Конвертируем в список словарей
             offices_list = []
             for office in offices:
                 offices_list.append({
@@ -99,7 +96,6 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            # Проверяем существует ли офис и его статус
             cursor.execute('SELECT * FROM offices WHERE number = ?', (office_number,))
             office = cursor.fetchone()
             
@@ -119,7 +115,6 @@ def api():
                     'id': id
                 }
             
-            # Бронируем офис
             cursor.execute('UPDATE offices SET tenant = ? WHERE number = ?', 
                          (login, office_number))
             conn.commit()
@@ -143,7 +138,6 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            # Проверяем офис
             cursor.execute('SELECT * FROM offices WHERE number = ?', (office_number,))
             office = cursor.fetchone()
             
@@ -171,7 +165,6 @@ def api():
                     'id': id
                 }
             
-            # Освобождаем офис
             cursor.execute('UPDATE offices SET tenant = ? WHERE number = ?', 
                          ('', office_number))
             conn.commit()
@@ -194,7 +187,6 @@ def api():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            # Получаем офисы текущего пользователя
             cursor.execute('SELECT * FROM offices WHERE tenant = ?', (login,))
             user_offices = cursor.fetchall()
             conn.close()
