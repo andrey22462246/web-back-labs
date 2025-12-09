@@ -114,7 +114,6 @@ def show_articles():
     
     all_articles = query.all()
     
-    # Получаем имена авторов для статей
     for article in all_articles:
         article.author_name = users.query.get(article.login_id).login if users.query.get(article.login_id) else 'Неизвестен'
         article.is_owner = current_user.is_authenticated and article.login_id == current_user.id
@@ -144,7 +143,6 @@ def my_articles():
     
     user_articles = query.all()
     
-    # Помечаем статьи как принадлежащие пользователю
     for article in user_articles:
         article.is_owner = True
     

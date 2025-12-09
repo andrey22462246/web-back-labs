@@ -19,7 +19,7 @@ def init_db():
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
-        # Проверить, существует ли таблица
+        
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='films';")
         table_exists = cursor.fetchone()
         
@@ -36,7 +36,7 @@ def init_db():
             ''')
             print("DEBUG init_db: Таблица 'films' создана")
             
-            # Добавить тестовые данные если таблица пустая
+            
             cursor.execute("SELECT COUNT(*) FROM films")
             count = cursor.fetchone()[0]
             if count == 0:
@@ -56,7 +56,7 @@ def init_db():
         
         conn.commit()
         
-        # Проверить содержимое
+        
         cursor.execute("SELECT COUNT(*) FROM films")
         count = cursor.fetchone()[0]
         print(f"DEBUG init_db: Всего фильмов в базе: {count}")
@@ -83,7 +83,7 @@ def get_db_connection():
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         
-        # Проверить что таблица существует
+        
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='films';")
         if not cursor.fetchone():
@@ -110,7 +110,7 @@ def get_films():
         print("DEBUG get_films: Начало получения фильмов")
         conn = get_db_connection()
         
-        # Проверить структуру таблицы
+       
         cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(films);")
         columns = cursor.fetchall()
@@ -170,19 +170,19 @@ def debug_db():
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
             
-            # Таблицы
+            
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
             info["tables"] = [row[0] for row in cursor.fetchall()]
             
-            # Структура films
+            
             cursor.execute("PRAGMA table_info(films);")
             info["films_structure"] = cursor.fetchall()
             
-            # Количество записей
+            
             cursor.execute("SELECT COUNT(*) FROM films;")
             info["films_count"] = cursor.fetchone()[0]
             
-            # Несколько записей
+            
             cursor.execute("SELECT * FROM films LIMIT 5;")
             info["films_sample"] = cursor.fetchall()
             
@@ -323,5 +323,5 @@ def add_film():
         print(f"Ошибка при добавлении фильма: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
-# Инициализация БД при импорте модуля
+
 init_db()
