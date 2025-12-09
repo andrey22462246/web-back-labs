@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Статьи{% endblock %}
+
+{% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab8/style.css') }}">
+<style>
+    .articles-list {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .article-card {
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-left: 4px solid #2196F3;
+        transition: all 0.3s;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    
+    .article-title {
+        color: #333;
+        margin: 0 0 10px 0;
+        font-size: 1.4em;
+    }
+    
+    .article-meta {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .article-meta span {
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: #f5f5f5;
+    }
+    
+    .favorite-badge {
+        background: #FF9800 !important;
+        color: white;
+    }
+    
+    .private-badge {
+        background: #9E9E9E !important;
+        color: white;
+    }
+    
+    .author-badge {
+        background: #4CAF50 !important;
+        color: white;
+    }
+    
+    .article-content {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    
+    .article-actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .edit-btn {
+        background: #2196F3;
+        color: white;
+    }
+    
+    .edit-btn:hover {
+        background: #1976D2;
+    }
+    
+    .delete-btn {
+        background: #f44336;
+        color: white;
+    }
+    
+    .delete-btn:hover {
+        background: #d32f2f;
+    }
+    
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.2em;
+    }
+    
+    .articles-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .articles-filter {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        border: 2px solid #4CAF50;
+        background: white;
+        color: #4CAF50;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .filter-btn.active {
+        background: #4CAF50;
+        color: white;
+    }
+    
+    .filter-btn:hover {
+        background: #4CAF50;
+        color: white;
+    }
+    
+    .search-form {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .search-input {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 250px;
+    }
+    
+    .search-btn {
+        padding: 8px 20px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .search-btn:hover {
+        background: #1976D2;
+    }
+    
+    .search-info {
+        margin: 10px 0;
+        padding: 10px;
+        background: #e3f2fd;
+        border-radius: 5px;
+        color: #1976d2;
+        font-size: 0.9em;
+    }
+    
+    .clear-search {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9em;
+        margin-left: 10px;
+    }
+    
+    .clear-search:hover {
+        text-decoration: underline;
+    }
+</style>
+<script>
+    function confirmDelete(articleId, articleTitle) {
+        return confirm('Вы уверены, что хотите удалить статью "' + articleTitle + '"?');
+    }
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="lab8-container">
+    <div class="lab8-header">
+        <h1>
+            {% if show_all_public %}
+                Все публичные статьи
+            {% else %}
+                Мои статьи
+            {% endif %}
+        </h1>
+        <p>
+            {% if show_all_public %}
+                Публичные статьи всех пользователей
+            {% else %}
+                Только ваши статьи (публичные и приватные)
+            {% endif %}
+        </p>
+    </div>
+    
+    <div class="user-status">
+        <div class="user-avatar">{{ username[0].upper() if username != 'anonymous' else 'A' }}</div>
+        <div class="user-name">Пользователь: {{ username }}</div>
+    </div>
+    
+    <div class="articles-header">
+        <div class="articles-filter">
+            <a href="/lab8/articles" class="filter-btn {% if show_all_public %}active{% endif %}">
+                Все публичные статьи
+            </a>
+            {% if username != 'anonymous' %}
+            <a href="/lab8/my_articles" class="filter-btn {% if not show_all_public %}active{% endif %}">
+                Мои статьи
+            </a>
+            <a href="/lab8/create" class="filter-btn">+ Создать статью</a>
+            {% endif %}
+        </div>
+        
+        <form method="get" action="{% if show_all_public %}/lab8/articles{% else %}/lab8/my_articles{% endif %}" class="search-form">
+            <input type="text" 
+                   name="search" 
+                   value="{{ search_query }}" 
+                   placeholder="Поиск по статьям..." 
+                   class="search-input">
+            <button type="submit" class="search-btn">🔍 Найти</button>
+        </form>
+        
+        <div class="lab8-nav">
+            <a href="/lab8/">На главную</a>
+        </div>
+    </div>
+    
+    {% if search_query %}
+    <div class="search-info">
+        Результаты поиска по запросу: <strong>"{{ search_query }}"</strong>
+        <a href="{% if show_all_public %}/lab8/articles{% else %}/lab8/my_articles{% endif %}" class="clear-search">
+            Очистить поиск
+        </a>
+    </div>
+    {% endif %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="margin: 20px 0; padding: 15px; border-radius: 5px; background-color: {% if category == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; color: {% if category == 'success' %}#155724{% else %}#721c24{% endif %}; border: 1px solid {% if category == 'success' %}#c3e6cb{% else %}#f5c6cb{% endif %};">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="articles-list">
+        {% if articles %}
+            {% for article in articles %}
+            <div class="article-card">
+                <h3 class="article-title">{{ article.title }}</h3>
+                <div class="article-meta">
+                    {% if article.author_name %}
+                    <span class="author-badge">Автор: {{ article.author_name }}</span>
+                    {% endif %}
+                    <span>ID: {{ article.id }}</span>
+                    {% if article.is_favorite and article.is_owner %}
+                    <span class="favorite-badge">★ Избранное</span>
+                    {% endif %}
+                    {% if not article.is_public %}
+                    <span class="private-badge">Приватная</span>
+                    {% endif %}
+                </div>
+                <div class="article-content">
+                    {{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}
+                </div>
+                <div class="article-actions">
+                    {% if article.is_owner %}
+                    <a href="/lab8/edit/{{ article.id }}" class="action-btn edit-btn">✏️ Редактировать</a>
+                    <form action="/lab8/delete/{{ article.id }}" method="post" 
+                          onsubmit="return confirmDelete({{ article.id }}, '{{ article.title }}')" 
+                          style="display: inline;">
+                        <button type="submit" class="action-btn delete-btn">🗑️ Удалить</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-message">
+                <p>
+                    {% if search_query %}
+                        По запросу "{{ search_query }}" ничего не найдено.
+                    {% elif show_all_public %}
+                        Публичных статей пока нет.
+                    {% else %}
+                        У вас пока нет статей.
+                    {% endif %}
+                </p>
+                {% if username != 'anonymous' and not show_all_public and not search_query %}
+                <p><a href="/lab8/create" style="color: #4CAF50; font-weight: bold;">Создайте первую статью!</a></p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

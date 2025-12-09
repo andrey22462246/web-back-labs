@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Создание статьи{% endblock %}
+
+{% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab8/style.css') }}">
+<style>
+    .create-form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+    
+    .form-group textarea {
+        min-height: 200px;
+        resize: vertical;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    
+    .checkbox-group {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+    
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+    
+    .submit-btn {
+        padding: 12px 30px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .form-links {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+    
+    .form-links a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+    
+    .form-links a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="lab8-container">
+    <div class="lab8-header">
+        <h1>Создание статьи</h1>
+        <p>Напишите и опубликуйте новую статью</p>
+    </div>
+    
+    <div class="user-status">
+        <div class="user-avatar">{{ username[0].upper() if username != 'anonymous' else 'A' }}</div>
+        <div class="user-name">Пользователь: {{ username }}</div>
+    </div>
+    
+    <div class="create-form">
+        <form action="#" method="post">
+            <div class="form-group">
+                <label for="title">Заголовок статьи:</label>
+                <input type="text" id="title" name="title" required maxlength="50">
+            </div>
+            
+            <div class="form-group">
+                <label for="content">Текст статьи:</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="is_favorite">
+                        Добавить в избранное
+                    </label>
+                    <label>
+                        <input type="checkbox" name="is_public" checked>
+                        Опубликовать публично
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Опубликовать статью</button>
+        </form>
+        
+        <div class="form-links">
+            <p><a href="/lab8/articles">← Вернуться к списку статей</a></p>
+            <p><a href="/lab8/">← Вернуться на главную</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
