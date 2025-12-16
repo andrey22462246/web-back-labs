@@ -1,4 +1,4 @@
-/* lab9.css */
+
 :root {
     --new-year-red: #d32f2f;
     --new-year-green: #2e7d32;
@@ -16,7 +16,7 @@
     padding: 20px;
 }
 
-/* Снежинки */
+
 .snowflakes {
     position: fixed;
     top: 0;
@@ -41,7 +41,7 @@
     }
 }
 
-/* Заголовок */
+
 .new-year-header {
     text-align: center;
     margin-bottom: 30px;
@@ -72,7 +72,7 @@
     }
 }
 
-/* Информационная панель */
+
 .info-panel {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -158,10 +158,10 @@
     left: 0;
 }
 
-/* Поле с подарками - УМЕНЬШАЕМ */
+
 .gifts-field {
     position: relative;
-    height: 500px; /* Уменьшаем высоту */
+    height: 500px; 
     background: rgba(0, 50, 0, 0.3);
     border-radius: 20px;
     margin-bottom: 30px;
@@ -175,10 +175,10 @@
     margin-right: auto;
 }
 
-/* Подарки - УМЕНЬШАЕМ ДО НОРМАЛЬНОГО РАЗМЕРА */
+
 .gift-box {
     position: absolute;
-    width: 120px; /* Было 300px, стало 120px (нормальный размер) */
+    width: 120px; 
     height: 120px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -216,7 +216,7 @@
     filter: grayscale(70%) brightness(70%) drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.4));
 }
 
-/* Ёлку уменьшаем */
+
 .tree-decoration {
     position: absolute;
     bottom: 20px;
@@ -226,7 +226,7 @@
 }
 
 .tree {
-    font-size: 6rem; /* Было 10rem, уменьшаем */
+    font-size: 6rem; 
     filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.6));
     animation: sway 4s ease-in-out infinite;
 }
@@ -278,13 +278,13 @@
     50% { opacity: 1; }
 }
 
-/* Анимация плавания */
+
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-15px); }
 }
 
-/* Модальное окно */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -423,7 +423,7 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Управление */
+
 .controls {
     display: flex;
     justify-content: center;
@@ -461,7 +461,7 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Сообщения об ошибке */
+
 .error-message {
     position: fixed;
     top: 20px;
@@ -491,21 +491,21 @@
     }
 }
 
-/* Анимация открытия подарка */
+
 @keyframes openGift {
     0% { transform: scale(1); }
     50% { transform: scale(1.2) rotate(10deg); }
     100% { transform: scale(1); opacity: 0.6; }
 }
 
-/* Анимация пульсации */
+
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
 
-/* Адаптивность */
+
 @media (max-width: 1200px) {
     .gift-box {
         width: 110px;
@@ -593,4 +593,127 @@
         padding: 10px 20px;
         font-size: 0.9rem;
     }
+
+   
+
+
+.btn-santa {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    background: linear-gradient(45deg, #FF0000, #FFFFFF, #00AA00);
+    background-size: 300% 300%;
+    color: #000;
+    animation: santaGradient 3s ease infinite;
+}
+
+.btn-santa-small {
+    padding: 5px 10px;
+    border: 1px solid var(--new-year-gold);
+    border-radius: 15px;
+    background: transparent;
+    color: var(--new-year-gold);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-santa-small:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+@keyframes santaGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+.success-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--new-year-green);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    animation: slideDown 0.3s ease-out;
+    text-align: center;
+    max-width: 80%;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+
+.gift-box.locked {
+    position: relative;
+}
+
+.gift-box.locked:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1;
+}
+.btn-help {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    background: linear-gradient(45deg, var(--new-year-blue), #4fc3f7);
+    color: white;
+}
+.btn-help:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+@keyframes santaGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+
+.status-loading {
+    animation: pulse 1.5s infinite;
+    color: var(--new-year-blue) !important;
+}
 }
