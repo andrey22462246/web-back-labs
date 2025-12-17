@@ -1,0 +1,106 @@
+{% extends "rgz/base_rgz.html" %}
+
+{% block content %}
+<div class="user-info" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    {% if session.rgz_user_id %}
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 3em;">
+                {{ session.rgz_avatar if session.rgz_avatar else '👤' }}
+            </div>
+            <div>
+                <p style="margin: 0; font-size: 1.2em;">Вы вошли как: <strong>{{ session.rgz_username }}</strong></p>
+                {% if session.rgz_is_admin %}
+                    <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.9em; margin-top: 5px; display: inline-block;">👑 Администратор</span>
+                {% endif %}
+            </div>
+        </div>
+        {% if not session.rgz_is_admin %}
+            <p style="margin-top: 10px;">
+                <a href="{{ url_for('rgz.delete_account') }}" 
+                   onclick="return confirm('Вы уверены, что хотите удалить свой аккаунт? Все ваши объявления будут удалены.')"
+                   style="color: #e74c3c; text-decoration: none; font-size: 0.9em;">
+                    🗑️ Удалить аккаунт
+                </a>
+            </p>
+        {% endif %}
+    {% else %}
+        <p>👤 Вы не авторизованы. <a href="{{ url_for('rgz.login') }}">Войдите</a> или <a href="{{ url_for('rgz.register') }}">зарегистрируйтесь</a> для создания объявлений.</p>
+    {% endif %}
+</div>
+
+<h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">📢 Все объявления</h2>
+
+{% if not ads %}
+    <div style="text-align: center; padding: 50px; color: #7f8c8d;">
+        <p style="font-size: 1.2em;">Пока нет объявлений. Будьте первым!</p>
+        {% if not session.rgz_user_id %}
+            <a href="{{ url_for('rgz.register') }}" style="display: inline-block; margin-top: 20px; background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+                📝 Зарегистрироваться и создать объявление
+            </a>
+        {% endif %}
+    </div>
+{% else %}
+    <div style="display: grid; gap: 20px; margin-top: 20px;">
+        {% for ad in ads %}
+        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <div style="font-size: 2.5em;">
+                    {{ ad.avatar if ad.avatar else '👤' }}
+                </div>
+                <div>
+                    <h3 style="margin: 0; color: #2c3e50;">{{ ad.title }}</h3>
+                    <div style="color: #7f8c8d; font-size: 0.9em;">
+                        <strong>{{ ad.full_name }}</strong>
+                        {% if session.rgz_user_id %}
+                            (📧 {{ ad.email }})
+                        {% else %}
+                            (📧 <em>только для авторизованных</em>)
+                        {% endif %}
+                        • 📅 {{ ad.created_at[:16] }}
+                        {% if ad.updated_at != ad.created_at %}
+                            • ✏️ Изменено: {{ ad.updated_at[:16] }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div style="line-height: 1.6; margin-bottom: 15px; white-space: pre-line; padding-left: 70px;">
+                {{ ad.content }}
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+                <div style="color: #7f8c8d; font-size: 0.9em;">
+                    🏛️ Группа: {{ ad.group_name }}
+                </div>
+                
+                {% if session.rgz_user_id and (session.rgz_user_id == ad.author_id or session.rgz_is_admin) %}
+                <div style="display: flex; gap: 10px;">
+                    <a href="{{ url_for('rgz.edit_ad', ad_id=ad.id) }}" 
+                       style="background: #f39c12; color: white; padding: 5px 10px; border-radius: 3px; text-decoration: none; font-size: 0.9em;">
+                        ✏️ Редактировать
+                    </a>
+                    <a href="{{ url_for('rgz.delete_ad', ad_id=ad.id) }}" 
+                       onclick="return confirm('Удалить это объявление?')"
+                       style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 3px; text-decoration: none; font-size: 0.9em;">
+                        🗑️ Удалить
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div style="margin-top: 30px; padding: 15px; background: #e8f4fc; border-radius: 5px; border-left: 4px solid #3498db;">
+    <strong>ℹ️ Информация:</strong>
+    <ul style="margin: 10px 0 0 20px;">
+        <li>Гости могут только просматривать объявления</li>
+        <li>Авторизованные пользователи видят email авторов и их аватарки</li>
+        <li>Только автор или администратор может редактировать/удалять объявление</li>
+        <li><strong>Администратор:</strong> admin / Admin123! (👑)</li>
+        <li><strong>Тестовый пользователь:</strong> test1 / password123 (😎)</li>
+        <li><strong>Тестовый студент:</strong> student / Student123! (🎓)</li>
+    </ul>
+</div>
+{% endblock %}

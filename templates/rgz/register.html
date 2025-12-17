@@ -1,0 +1,124 @@
+{% extends "rgz/base_rgz.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">📝 Регистрация нового пользователя</h2>
+    
+    <form method="POST" action="{{ url_for('rgz.register') }}">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Имя пользователя *</label>
+                <input type="text" name="username" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <small style="color: #7f8c8d;">Только латинские буквы и цифры (от 3 символов)</small>
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Пароль *</label>
+                <input type="password" name="password" required
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <small style="color: #7f8c8d;">Минимум 6 символов</small>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Полное имя *</label>
+                <input type="text" name="full_name" required
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Email *</label>
+                <input type="email" name="email" required
+                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <small style="color: #7f8c8d;">Будет виден только авторизованным</small>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Выберите аватарку (эмоджи)</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                {% for emoji in emojis %}
+                <label style="cursor: pointer;">
+                    <input type="radio" name="avatar" value="{{ emoji }}" 
+                           {% if loop.first %}checked{% endif %}
+                           style="display: none;">
+                    <div style="font-size: 2em; padding: 10px; border: 2px solid #ddd; border-radius: 50%; 
+                               transition: all 0.3s; text-align: center; width: 50px; height: 50px;
+                               display: flex; align-items: center; justify-content: center;">
+                        {{ emoji }}
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+            <input type="text" name="avatar_custom" 
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"
+                   placeholder="Или введите свой эмоджи (например: 🐶)">
+            <small style="color: #7f8c8d;">Нажмите на эмоджи или введите свой</small>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">О себе (необязательно)</label>
+            <textarea name="about" rows="3"
+                      style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #3498db;">
+            <strong>📋 Что дает регистрация?</strong>
+            <ul style="margin: 10px 0 0 20px; color: #7f8c8d;">
+                <li>Создание собственных объявлений</li>
+                <li>Уникальная аватарка рядом с вашими объявлениями</li>
+                <li>Просмотр контактных данных других авторов</li>
+                <li>Редактирование и удаление своих объявлений</li>
+            </ul>
+        </div>
+        
+        <button type="submit" 
+                style="width: 100%; background: #2ecc71; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer;">
+            📝 Зарегистрироваться
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <p>Уже есть аккаунт? <a href="{{ url_for('rgz.login') }}">Войдите</a></p>
+        <p><a href="{{ url_for('rgz.index') }}">← Назад к объявлениям</a></p>
+    </div>
+</div>
+
+<script>
+    // Подсветка выбранной аватарки
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarInputs = document.querySelectorAll('input[name="avatar"]');
+        const customAvatarInput = document.querySelector('input[name="avatar_custom"]');
+        
+        avatarInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Убираем подсветку у всех
+                document.querySelectorAll('label > div').forEach(div => {
+                    div.style.borderColor = '#ddd';
+                    div.style.backgroundColor = 'transparent';
+                });
+                
+                // Подсвечиваем выбранную
+                const selectedDiv = this.parentElement.querySelector('div');
+                selectedDiv.style.borderColor = '#3498db';
+                selectedDiv.style.backgroundColor = '#e8f4fc';
+                
+                // Очищаем кастомное поле
+                customAvatarInput.value = '';
+            });
+        });
+        
+        // При вводе в кастомное поле снимаем выбор с радио-кнопок
+        customAvatarInput.addEventListener('input', function() {
+            avatarInputs.forEach(input => {
+                input.checked = false;
+                const div = input.parentElement.querySelector('div');
+                div.style.borderColor = '#ddd';
+                div.style.backgroundColor = 'transparent';
+            });
+        });
+    });
+</script>
+{% endblock %}

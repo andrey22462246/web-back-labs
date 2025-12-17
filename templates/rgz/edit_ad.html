@@ -1,0 +1,49 @@
+{% extends "rgz/base_rgz.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">✏️ Редактировать объявление</h2>
+    
+    <form method="POST" action="{{ url_for('rgz.edit_ad', ad_id=ad.id) }}">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Заголовок *</label>
+            <input type="text" name="title" value="{{ ad.title }}" required minlength="3"
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 1.2em;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Текст объявления *</label>
+            <textarea name="content" rows="10" required minlength="10"
+                      style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em;">{{ ad.content }}</textarea>
+        </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" 
+                    style="flex: 1; background: #f39c12; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer;">
+                💾 Сохранить изменения
+            </button>
+            <a href="{{ url_for('rgz.index') }}"
+               style="flex: 0.3; background: #95a5a6; color: white; padding: 12px; border-radius: 5px; text-decoration: none; text-align: center;">
+                Отмена
+            </a>
+        </div>
+    </form>
+    
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <div style="font-size: 2em;">
+                {{ ad.avatar if ad.avatar else '👤' }}
+            </div>
+            <div>
+                <p><strong>ID объявления:</strong> {{ ad.id }}</p>
+                <p><strong>Автор:</strong> {{ ad.full_name }}</p>
+                <p><strong>Email автора:</strong> {{ ad.email }}</p>
+                <p><strong>Создано:</strong> {{ ad.created_at[:16] }}</p>
+                {% if ad.updated_at != ad.created_at %}
+                    <p><strong>Изменено:</strong> {{ ad.updated_at[:16] }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

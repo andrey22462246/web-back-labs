@@ -8,6 +8,7 @@ from lab6 import lab6
 from lab7 import lab7
 from lab8 import lab8
 from lab9 import lab9
+from rgz import rgz
 import datetime
 import math
 import os 
@@ -53,6 +54,7 @@ app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
 app.register_blueprint(lab9)
+app.register_blueprint(rgz)
 
 error_404_log = []
 
@@ -156,7 +158,8 @@ def main_page():
             <li><a href="/lab6">😃 Лабораторная работа 6</a></li>
             <li><a href="/lab7">😴 Лабораторная работа 7</a></li>
             <li><a href="/lab8">📝 Лабораторная работа 8</a></li>
-            <li><a href="/lab9">🎄 Лабораторная работа 9</a></li>          
+            <li><a href="/lab9">🎄 Лабораторная работа 9</a></li>
+            <li><a href="/rgz">📢 Расчетно графическая работа</a></li>           
         </ul>
     </nav>
 
@@ -213,6 +216,12 @@ def main_page():
             <h3>🎄 Лабораторная работа 9</h3>
             <p>Сайт поздравления</p>
             <a href="/lab9">Перейти к лабораторной →</a>
+        </div>
+
+        <div class="lab-card rgz">
+            <h3>📢 Лабораторная работа 9</h3>
+            <p>Доска объявлений</p>
+            <a href="/rgz">Перейти к лабораторной →</a>
         </div>
     </div>
     
