@@ -1,5 +1,6 @@
 import json
 import random
+import hashlib
 from flask import Blueprint, render_template, request, jsonify, session
 
 lab9 = Blueprint('lab9', __name__, template_folder='templates')
@@ -70,49 +71,46 @@ CONGRATULATIONS = [
     },
     {
         "id": 9,
-        "text": " Пусть новый год станет годом великих открытий и успехов!",
-        "gift_name": "Волшебный карта",
+        "text": "🎅 ОСОБЫЙ ПОДАРОК: Пусть новый год станет годом великих открытий и успехов!",
+        "gift_name": "Волшебная карта мира",
         "image": "gift10.png",
-        "requires_auth": True  
+        "requires_auth": True
     }
 ]
 
-
 USERS = {
-    "user": "123",  
+    "user": "123",
     "admin": "admin",
     "santa": "2025",
     "гость": "праздник"
 }
 
+game_states = {}
 
-gift_states = {}
+def get_user_key():
+    if session.get('authenticated'):
+        username = session.get('username', '')
+        session_id = session.get('session_id', '')
+        return f"{username}_{session_id}"
+    return session.get('session_id', 'default')
 
 def generate_gift_positions():
-    """Генерация СЛУЧАЙНЫХ позиций для подарков без наложения"""
     positions = []
-    occupied_positions = []  
-    
-    
+    occupied_positions = []
     all_gift_ids = list(range(10))
-    random.shuffle(all_gift_ids) 
+    random.shuffle(all_gift_ids)
     
     for gift_id in all_gift_ids:
         placed = False
         attempts = 0
         
-        while not placed and attempts < 100:  
+        while not placed and attempts < 100:
             attempts += 1
-            
-            
-            top = random.randint(5, 75)  
-            left = random.randint(5, 85)  
-            
-            
+            top = random.randint(5, 75)
+            left = random.randint(5, 85)
             
             overlaps = False
             for occupied in occupied_positions:
-                
                 if (abs(top - occupied['top']) < 15 and 
                     abs(left - occupied['left']) < 15):
                     overlaps = True
@@ -129,7 +127,6 @@ def generate_gift_positions():
                 occupied_positions.append({"top": top, "left": left})
                 placed = True
         
-        
         if not placed:
             top = random.randint(5, 75)
             left = random.randint(5, 85)
@@ -143,77 +140,80 @@ def generate_gift_positions():
     
     return positions
 
+def init_game_state():
+    user_key = get_user_key()
+    if user_key not in game_states:
+        game_states[user_key] = {
+            'gift_positions': generate_gift_positions(),
+            'opened_gifts': [],
+            'opened_count': 0
+        }
+    return game_states[user_key]
+
 @lab9.route('/lab9')
 def lab9_route():
-    """Главная страница"""
-    if 'user_id' not in session:
-        session['user_id'] = f"user_{random.randint(1000, 9999)}"
-        session['opened_count'] = 0
+    if 'session_id' not in session:
+        session_id = f"{random.randint(10000, 99999)}_{random.randint(10000, 99999)}_{random.randint(10000, 99999)}"
+        session['session_id'] = session_id
     
-    user_id = session['user_id']
+    game_state = init_game_state()
     
-    if user_id not in gift_states:
-        
-        gift_states[user_id] = {
-            "positions": generate_gift_positions(),
-            "opened_gifts": [],
-            "congratulations": CONGRATULATIONS
-        }
-    
+    opened_gifts = game_state['opened_gifts']
+    opened_count = game_state['opened_count']
     is_authenticated = session.get('authenticated', False)
-    opened_count = session.get('opened_count', 0)
-    total_opened = len(gift_states[user_id]['opened_gifts'])
-    remaining = 10 - total_opened
+    username = session.get('username', '')
     
+    positions = game_state['gift_positions']
+    for pos in positions:
+        pos['opened'] = pos['id'] in opened_gifts
     
     available = 10 if is_authenticated else 9
     
     return render_template('lab9/lab9.html',
                          opened_count=opened_count,
-                         remaining_count=remaining,
+                         remaining_count=10 - len(opened_gifts),
                          available_count=available,
-                         user_id=user_id,
                          authenticated=is_authenticated,
-                         username=session.get('username', ''))
+                         username=username)
 
 @lab9.route('/lab9/login', methods=['POST'])
 def login():
-    """Авторизация с проверкой пароля"""
     try:
         data = request.get_json()
         username = data.get('username', '').strip()
         password = data.get('password', '').strip()
         
         if not username or not password:
-            return jsonify({
-                "success": False,
-                "error": "Введите имя пользователя и пароль"
-            })
-        
+            return jsonify({"success": False, "error": "Введите имя пользователя и пароль"})
         
         if username in USERS and USERS[username] == password:
+            old_key = get_user_key()
+            
             session['authenticated'] = True
             session['username'] = username
             
+            if old_key != get_user_key():
+                init_game_state()
+            
             return jsonify({
                 "success": True,
-                "message": f"Добро пожаловать, {username}! 🎅 Теперь доступен особый подарок!",
+                "message": f"Добро пожаловать, {username}! 🎅",
                 "username": username
             })
         else:
-            return jsonify({
-                "success": False,
-                "error": "Неверное имя пользователя или пароль"
-            })
+            return jsonify({"success": False, "error": "Неверное имя пользователя или пароль"})
             
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
 @lab9.route('/lab9/logout', methods=['POST'])
 def logout():
-    """Выход"""
+    old_key = get_user_key()
     session.pop('authenticated', None)
     session.pop('username', None)
+    
+    if old_key != get_user_key():
+        init_game_state()
     
     return jsonify({
         "success": True,
@@ -222,7 +222,6 @@ def logout():
 
 @lab9.route('/lab9/open_gift', methods=['POST'])
 def open_gift():
-    """Открытие подарка"""
     try:
         data = request.get_json()
         gift_id = data.get('gift_id')
@@ -230,51 +229,42 @@ def open_gift():
         if gift_id is None or not isinstance(gift_id, int) or gift_id < 0 or gift_id >= 10:
             return jsonify({"success": False, "error": "Неверный ID подарка"})
         
-        user_id = session.get('user_id')
-        if not user_id or user_id not in gift_states:
-            return jsonify({"success": False, "error": "Сессия не найдена"})
+        game_state = init_game_state()
+        opened_gifts = game_state['opened_gifts']
         
-        user_state = gift_states[user_id]
+        if gift_id in opened_gifts:
+            return jsonify({"success": False, "error": "Этот подарок уже открыт"})
         
-        
-        if gift_id in user_state['opened_gifts']:
-            return jsonify({
-                "success": False, 
-                "error": "Этот подарок уже открыт"
-            })
-        
-        
-        opened_count = session.get('opened_count', 0)
+        opened_count = game_state['opened_count']
         if opened_count >= 3:
-            return jsonify({
-                "success": False,
-                "error": "Вы уже открыли 3 подарка"
-            })
-        
+            return jsonify({"success": False, "error": "Вы уже открыли 3 подарка"})
         
         congrat = CONGRATULATIONS[gift_id]
         if congrat["requires_auth"] and not session.get('authenticated'):
             return jsonify({
                 "success": False,
-                "error": "Этот особый подарок доступен только для авторизованных пользователей",
+                "error": "Этот подарок доступен только для авторизованных пользователей",
                 "requires_auth": True
             })
         
+        opened_gifts.append(gift_id)
+        game_state['opened_gifts'] = opened_gifts
+        game_state['opened_count'] = opened_count + 1
         
-        user_state['opened_gifts'].append(gift_id)
-        session['opened_count'] = opened_count + 1
-        
-        
-        for pos in user_state['positions']:
+        positions = game_state['gift_positions']
+        for pos in positions:
             if pos['id'] == gift_id:
                 pos['opened'] = True
                 break
         
+        user_key = get_user_key()
+        game_states[user_key] = game_state
+        
         return jsonify({
             "success": True,
             "congratulation": congrat,
-            "opened_count": session['opened_count'],
-            "remaining_count": 10 - len(user_state['opened_gifts'])
+            "opened_count": game_state['opened_count'],
+            "remaining_count": 10 - len(opened_gifts)
         })
         
     except Exception as e:
@@ -282,30 +272,20 @@ def open_gift():
 
 @lab9.route('/lab9/santa_refill', methods=['POST'])
 def santa_refill():
-    """Дед Мороз обновляет подарки - только для авторизованных"""
     try:
-        
         if not session.get('authenticated', False):
-            return jsonify({
-                "success": False,
-                "error": "Эта функция доступна только для авторизованных пользователей"
-            })
+            return jsonify({"success": False, "error": "Требуется авторизация"})
         
-        user_id = session.get('user_id')
-        if user_id in gift_states:
-            
-            gift_states[user_id] = {
-                "positions": generate_gift_positions(),
-                "opened_gifts": [],  
-                "congratulations": CONGRATULATIONS
-            }
-        
-        
-        session['opened_count'] = 0
+        user_key = get_user_key()
+        game_states[user_key] = {
+            'gift_positions': generate_gift_positions(),
+            'opened_gifts': [],
+            'opened_count': 0
+        }
         
         return jsonify({
             "success": True,
-            "message": "🎅 Дед Мороз обновил подарки! Позиции подарков изменены.",
+            "message": "🎅 Дед Мороз обновил подарки!",
             "opened_count": 0,
             "remaining_count": 10
         })
@@ -315,29 +295,26 @@ def santa_refill():
 
 @lab9.route('/lab9/get_state', methods=['GET'])
 def get_state():
-    """Получение состояния"""
     try:
-        user_id = session.get('user_id')
-        if not user_id or user_id not in gift_states:
-            return jsonify({"success": False, "error": "Сессия не найдена"})
-        
-        user_state = gift_states[user_id]
+        game_state = init_game_state()
+        positions = game_state['gift_positions']
+        opened_gifts = game_state['opened_gifts']
         is_authenticated = session.get('authenticated', False)
         
+        for pos in positions:
+            pos['opened'] = pos['id'] in opened_gifts
         
         available_count = 10
         if not is_authenticated:
-            
-            locked_count = sum(1 for pos in user_state['positions'] 
-                             if pos.get('requires_auth') and not pos['opened'])
+            locked_count = sum(1 for pos in positions if pos.get('requires_auth') and not pos['opened'])
             available_count = 10 - locked_count
         
         return jsonify({
             "success": True,
-            "positions": user_state['positions'],
-            "opened_gifts": user_state['opened_gifts'],
-            "opened_count": session.get('opened_count', 0),
-            "remaining_count": 10 - len(user_state['opened_gifts']),
+            "positions": positions,
+            "opened_gifts": opened_gifts,
+            "opened_count": game_state['opened_count'],
+            "remaining_count": 10 - len(opened_gifts),
             "available_count": available_count,
             "authenticated": is_authenticated,
             "username": session.get('username', '')
