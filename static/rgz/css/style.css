@@ -1,11 +1,11 @@
-/* Основные стили для РГЗ */
+
 .rgz-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Карточки объявлений */
+
 .ad-card {
     background: white;
     border-radius: 10px;

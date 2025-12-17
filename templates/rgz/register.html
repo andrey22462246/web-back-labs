@@ -87,30 +87,30 @@
 </div>
 
 <script>
-    // Подсветка выбранной аватарки
+    
     document.addEventListener('DOMContentLoaded', function() {
         const avatarInputs = document.querySelectorAll('input[name="avatar"]');
         const customAvatarInput = document.querySelector('input[name="avatar_custom"]');
         
         avatarInputs.forEach(input => {
             input.addEventListener('change', function() {
-                // Убираем подсветку у всех
+                
                 document.querySelectorAll('label > div').forEach(div => {
                     div.style.borderColor = '#ddd';
                     div.style.backgroundColor = 'transparent';
                 });
                 
-                // Подсвечиваем выбранную
+                
                 const selectedDiv = this.parentElement.querySelector('div');
                 selectedDiv.style.borderColor = '#3498db';
                 selectedDiv.style.backgroundColor = '#e8f4fc';
                 
-                // Очищаем кастомное поле
+                
                 customAvatarInput.value = '';
             });
         });
         
-        // При вводе в кастомное поле снимаем выбор с радио-кнопок
+        
         customAvatarInput.addEventListener('input', function() {
             avatarInputs.forEach(input => {
                 input.checked = false;

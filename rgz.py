@@ -4,19 +4,19 @@ import hashlib
 import re
 from functools import wraps
 
-# Создаем Blueprint для РГЗ
+
 rgz = Blueprint('rgz', __name__, url_prefix='/rgz')
 
-# Настройки
+
 DB_NAME = 'rgz_database.db'
 
-# ========== УТИЛИТЫ БАЗЫ ДАННЫХ ==========
+
 def init_db():
     """Инициализация базы данных для РГЗ"""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # Таблица пользователей
+    
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS rgz_users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +32,7 @@ def init_db():
     )
     ''')
     
-    # Таблица объявлений
+    
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS rgz_advertisements (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,17 +45,17 @@ def init_db():
     )
     ''')
     
-    # Добавляем колонку avatar, если её нет (для существующих БД)
+    
     try:
         cursor.execute("SELECT avatar FROM rgz_users LIMIT 1")
     except sqlite3.OperationalError:
-        # Колонки нет - добавляем
+        
         cursor.execute("ALTER TABLE rgz_users ADD COLUMN avatar TEXT DEFAULT '👤'")
         print("Добавлена колонка avatar в таблицу пользователей")
     
     conn.commit()
     
-    # Создаем администратора
+    
     cursor.execute('SELECT * FROM rgz_users WHERE username = ?', ('admin',))
     if not cursor.fetchone():
         hashed_password = hashlib.sha256('Admin123!'.encode()).hexdigest()
@@ -65,7 +65,7 @@ def init_db():
         )
         print("Создан администратор: admin / Admin123!")
     
-    # Создаем тестового пользователя
+    
     cursor.execute('SELECT * FROM rgz_users WHERE username = ?', ('test1',))
     if not cursor.fetchone():
         hashed_password = hashlib.sha256('password123'.encode()).hexdigest()
@@ -75,7 +75,7 @@ def init_db():
         )
         print("Создан тестовый пользователь: test1 / password123")
     
-    # Создаем тестового студента
+    
     cursor.execute('SELECT * FROM rgz_users WHERE username = ?', ('student',))
     if not cursor.fetchone():
         hashed_password = hashlib.sha256('Student123!'.encode()).hexdigest()
@@ -95,7 +95,7 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# ========== ВАЛИДАЦИЯ ==========
+
 def validate_username(username):
     if not username or len(username) < 3:
         return "Имя пользователя должно содержать минимум 3 символа"
@@ -123,7 +123,7 @@ def validate_ad(title, content):
         return "Текст объявления должен содержать минимум 10 символов"
     return None
 
-# ========== ДЕКОРАТОРЫ ==========
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -153,7 +153,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# ========== МОДЕЛИ ==========
+
 class UserModel:
     @staticmethod
     def create(username, password, full_name, email, avatar='👤', about=None):
@@ -279,14 +279,14 @@ class AdvertisementModel:
         conn.commit()
         conn.close()
 
-# ========== МАРШРУТЫ ==========
+
 @rgz.route('/')
 def index():
     """Главная страница доски объявлений"""
     init_db()
     ads = AdvertisementModel.get_all()
     
-    # Проверяем, находится ли пользователь в сессии РГЗ
+    
     user_id = session.get('rgz_user_id')
     username = session.get('rgz_username')
     is_admin = session.get('rgz_is_admin')
@@ -308,7 +308,7 @@ def login():
         
         user = UserModel.get_by_username(username)
         if user and UserModel.verify_password(user['password'], password):
-            # Используем префикс rgz_ для сессии, чтобы не конфликтовать с лабами
+            
             session['rgz_user_id'] = user['id']
             session['rgz_username'] = user['username']
             session['rgz_is_admin'] = user['is_admin']
@@ -331,12 +331,12 @@ def register():
         avatar = request.form.get('avatar', '👤')
         about = request.form.get('about', '')
         
-        # Если выбрана кастомная аватарка
+        
         custom_avatar = request.form.get('avatar_custom', '')
         if custom_avatar:
             avatar = custom_avatar
         
-        # Валидация
+        
         if error := validate_username(username):
             flash(error, 'error')
         elif error := validate_password(password):
@@ -355,7 +355,7 @@ def register():
             except Exception as e:
                 flash(f'Ошибка при регистрации: {str(e)}', 'error')
     
-    # Список доступных эмоджи для аватарок
+    
     emojis = ['👤', '😎', '🎓', '🧑‍💻', '👨‍🎓', '👩‍🎓', '🤓', '😊', '😄', '🌟', '🔥', '💫', '🐱', '🐶', '🦊', '🐼', '🦁', '🐯']
     
     return render_template('rgz/register.html', emojis=emojis)
@@ -397,7 +397,7 @@ def edit_ad(ad_id):
         flash('Объявление не найдено', 'error')
         return redirect(url_for('rgz.index'))
     
-    # Проверка прав доступа
+    
     if ad['author_id'] != session['rgz_user_id'] and not session.get('rgz_is_admin'):
         flash('У вас нет прав для редактирования этого объявления', 'error')
         return redirect(url_for('rgz.index'))
@@ -425,7 +425,7 @@ def delete_ad(ad_id):
         flash('Объявление не найдено', 'error')
         return redirect(url_for('rgz.index'))
     
-    # Проверка прав доступа
+    
     if ad['author_id'] != session['rgz_user_id'] and not session.get('rgz_is_admin'):
         flash('У вас нет прав для удаления этого объявления', 'error')
         return redirect(url_for('rgz.index'))
@@ -444,13 +444,13 @@ def delete_account():
     
     user_id = session['rgz_user_id']
     
-    # Очищаем сессию
+    
     session.pop('rgz_user_id', None)
     session.pop('rgz_username', None)
     session.pop('rgz_is_admin', None)
     session.pop('rgz_avatar', None)
     
-    # Удаляем пользователя
+    
     UserModel.delete(user_id)
     flash('Ваш аккаунт успешно удален', 'info')
     return redirect(url_for('rgz.index'))
@@ -474,20 +474,20 @@ def delete_user(user_id):
         flash('Пользователь удален', 'success')
     return redirect(url_for('rgz.admin_panel'))
 
-# Инициализация БД при импорте
+
 init_db()
 
-# Добавляем тестовые объявления
+
 def add_test_ads():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Проверяем, есть ли уже объявления
+    
     cursor.execute('SELECT COUNT(*) FROM rgz_advertisements')
     count = cursor.fetchone()[0]
     
     if count == 0:
-        # Получаем ID пользователей
+        
         cursor.execute('SELECT id FROM rgz_users WHERE username = "admin"')
         admin_id = cursor.fetchone()[0]
         
@@ -497,7 +497,7 @@ def add_test_ads():
         cursor.execute('SELECT id FROM rgz_users WHERE username = "student"')
         student_id = cursor.fetchone()[0]
         
-        # Добавляем тестовые объявления
+        
         test_ads = [
             ('Продаю ноутбук', 'Отличный ноутбук в идеальном состоянии. Процессор i7, 16 ГБ ОЗУ, SSD 512 ГБ. Цена договорная.', test1_id),
             ('Ищу репетитора по математике', 'Нужен репетитор для студента 1 курса. Занятия 2 раза в неделю.', student_id),
@@ -517,5 +517,5 @@ def add_test_ads():
     
     conn.close()
 
-# Добавляем тестовые объявления при запуске
+
 add_test_ads()
